@@ -3,1215 +3,697 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>DBD Mobile Guide — маньяки, выжившие, билды</title>
-  <meta name="theme-color" content="#120f14">
+  <title>DBD Mobile Guide</title>
+  <meta name="theme-color" content="#050507">
   <style>
     :root {
-      --bg: #0d0b0f;
-      --bg2: #151118;
-      --card: #1b1620;
-      --card2: #221a29;
-      --text: #f1e9f5;
-      --muted: #a99bb3;
-      --accent: #b52a3a;
-      --accent2: #e05a6a;
-      --line: rgba(255,255,255,.1);
-      --ok: #7bd88f;
-      --radius: 18px;
+      --bg: #050507; --bg2: #0f0f13; --card: #141419; --card2: #1a1a22;
+      --text: #e8e6ea; --muted: #8a8a99; --accent: #8c0e1a; --accent2: #d92b3a;
+      --blood: #ff3344; --line: rgba(255,255,255,.06); --radius: 12px;
     }
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background:
-        radial-gradient(circle at 10% -10%, rgba(181,42,58,.25), transparent 35%),
-        radial-gradient(circle at 100% 10%, rgba(90,40,120,.18), transparent 30%),
-        var(--bg);
-      color: var(--text);
-      min-height: 100vh;
+      margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at 50% -10%, #1c0f13 0%, var(--bg) 60%);
+      color: var(--text); min-height: 100vh; background-attachment: fixed;
     }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: .04;
-      background-image: repeating-linear-gradient(0deg, #fff 0 1px, transparent 1px 4px);
-      z-index: 100;
-      mix-blend-mode: overlay;
+    body::after {
+      content: ""; position: fixed; inset: 0; pointer-events: none;
+      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.04"/></svg>');
+      z-index: 999;
     }
     header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(13,11,15,.92);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--line);
-      padding: 12px 14px 10px;
+      position: sticky; top: 0; z-index: 50; background: rgba(5, 5, 7, 0.92);
+      backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding: 12px 14px 10px;
     }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
     .logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      background: linear-gradient(145deg, var(--accent), #4a1018);
-      display: grid;
-      place-items: center;
-      font-weight: 900;
-      font-size: 18px;
-      box-shadow: 0 8px 24px rgba(181,42,58,.25);
-      flex: 0 0 auto;
+      width: 38px; height: 38px; border-radius: 50%;
+      background: radial-gradient(circle, var(--accent2) 0%, var(--accent) 100%);
+      display: grid; place-items: center; font-size: 18px; font-weight: 900;
+      box-shadow: 0 0 12px rgba(217, 43, 58, 0.4); flex: 0 0 auto;
     }
-    .brand h1 {
-      font-size: 17px;
-      line-height: 1.1;
-      margin: 0;
-      letter-spacing: .2px;
-    }
-    .brand p {
-      margin: 2px 0 0;
-      font-size: 11px;
-      color: var(--muted);
-    }
+    .brand h1 { font-size: 17px; line-height: 1.1; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+    .brand p { margin: 3px 0 0; font-size: 11px; color: var(--muted); }
     .search {
-      width: 100%;
-      border: 1px solid var(--line);
-      background: var(--bg2);
-      color: var(--text);
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-size: 15px;
-      outline: none;
+      width: 100%; border: 1px solid #2a2a35; background: #0a0a0d; color: var(--text);
+      border-radius: 10px; padding: 12px 14px; font-size: 15px; outline: none; transition: 0.2s;
     }
-    .search:focus { border-color: rgba(224,90,106,.55); }
-    nav.tabs {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      overflow-x: auto;
-      padding-bottom: 2px;
-      scrollbar-width: none;
-    }
+    .search:focus { border-color: var(--accent2); box-shadow: 0 0 10px rgba(217,43,58,0.15); }
+    nav.tabs { display: flex; gap: 6px; margin-top: 12px; overflow-x: auto; scrollbar-width: none; }
     nav.tabs::-webkit-scrollbar { display: none; }
     .tab-btn {
-      flex: 1 0 auto;
-      border: 1px solid var(--line);
-      background: transparent;
-      color: var(--muted);
-      border-radius: 12px;
-      padding: 9px 12px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
+      flex: 1 0 auto; border: 1px solid var(--line); background: rgba(255,255,255,0.02);
+      color: var(--muted); border-radius: 8px; padding: 9px 12px; font-size: 12px;
+      font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: 0.2s;
     }
     .tab-btn.active {
-      color: #fff;
-      background: linear-gradient(180deg, rgba(181,42,58,.9), rgba(120,20,35,.9));
-      border-color: rgba(224,90,106,.5);
-      box-shadow: 0 8px 20px rgba(181,42,58,.18);
+      color: #fff; background: linear-gradient(180deg, var(--accent2), var(--accent));
+      border-color: var(--blood); box-shadow: 0 4px 12px rgba(140,14,26,0.3);
     }
     main { padding: 14px 14px 90px; max-width: 980px; margin: 0 auto; }
-    .tab-panel { display: none; }
+    .tab-panel { display: none; animation: fadeIn 0.3s ease; }
     .tab-panel.active { display: block; }
-    .panel-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 10px;
-      margin: 4px 0 12px;
-    }
-    .panel-head h2 { margin: 0; font-size: 19px; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .panel-head { display: flex; justify-content: space-between; align-items: baseline; margin: 10px 0 16px; }
+    .panel-head h2 { margin: 0; font-size: 18px; }
     .count { color: var(--muted); font-size: 12px; }
     .cards { display: grid; gap: 12px; }
     .card {
-      background: linear-gradient(180deg, var(--card), var(--bg2));
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 14px;
-      box-shadow: 0 14px 34px rgba(0,0,0,.18);
+      background: linear-gradient(180deg, var(--card2), var(--card));
+      border: 1px solid var(--line); border-radius: var(--radius); padding: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4); position: relative; overflow: hidden;
     }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent2), transparent); opacity: 0.4; }
     .card-top { display: flex; gap: 12px; align-items: flex-start; }
     .avatar {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      flex: 0 0 auto;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(145deg, #3a1c2a, #1b1620);
-      border: 1px solid rgba(224,90,106,.25);
-      color: #f4dce2;
-      font-weight: 900;
-      font-size: 18px;
+      width: 46px; height: 46px; border-radius: 8px; flex: 0 0 auto;
+      display: grid; place-items: center; background: #222; border: 1px solid #333;
+      color: var(--text); font-weight: 900; font-size: 18px;
     }
+    .killer-avatar { border-color: rgba(217,43,58,0.4); }
     .card h3 { margin: 0; font-size: 16px; line-height: 1.2; }
-    .alias { margin: 4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.35; }
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 8px; }
+    .alias { margin: 4px 0 0; color: var(--accent2); font-size: 12px; font-weight: 600; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
     .tag {
-      font-size: 10px;
-      color: #e9cbd2;
-      background: rgba(181,42,58,.14);
-      border: 1px solid rgba(224,90,106,.22);
-      padding: 4px 7px;
-      border-radius: 999px;
+      font-size: 10px; color: #ccc; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08); padding: 4px 8px; border-radius: 4px;
+      text-transform: uppercase; letter-spacing: 0.5px;
     }
-    .desc { margin: 8px 0 0; font-size: 13px; line-height: 1.5; color: #dfd3e5; }
-    details { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 10px; }
+    .desc { margin: 8px 0 0; font-size: 14px; line-height: 1.5; color: #c4c4cc; }
+    details { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 14px; }
     summary {
-      cursor: pointer;
-      color: var(--accent2);
-      font-size: 13px;
-      font-weight: 700;
-      list-style: none;
+      cursor: pointer; color: #fff; font-size: 13px; font-weight: 800; list-style: none;
+      display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; color: var(--accent2);
     }
-    summary::-webkit-details-marker { display: none; }
-    summary::after { content: " +"; }
-    details[open] summary::after { content: " −"; }
-    details p { margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
-    .builder {
-      background: linear-gradient(180deg, var(--card), var(--bg2));
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      padding: 16px;
-      box-shadow: 0 18px 44px rgba(0,0,0,.22);
-    }
-    .builder h2 { margin: 0 0 4px; font-size: 20px; }
-    .builder .lead { margin: 0 0 14px; color: var(--muted); font-size: 13px; line-height: 1.45; }
-    label.field { display: block; margin-bottom: 12px; }
-    label.field span { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-    select, textarea {
-      width: 100%;
-      background: var(--bg2);
-      color: var(--text);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px;
-      font: inherit;
-      font-size: 14px;
-      outline: none;
-    }
-    textarea { min-height: 110px; resize: vertical; line-height: 1.45; }
-    select:focus, textarea:focus { border-color: rgba(224,90,106,.55); }
-    .btn {
-      width: 100%;
-      border: 0;
-      border-radius: 14px;
-      padding: 13px 16px;
-      font: inherit;
-      font-weight: 800;
-      color: #fff;
-      background: linear-gradient(180deg, var(--accent2), var(--accent));
-      box-shadow: 0 12px 28px rgba(181,42,58,.26);
-      cursor: pointer;
-    }
-    .btn:active { transform: translateY(1px); }
-    .result {
-      margin-top: 14px;
-      border-radius: 16px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      padding: 14px;
-      display: none;
-    }
-    .result.visible { display: block; }
-    .result h3 { margin: 0 0 6px; font-size: 16px; }
-    .result ul { margin: 10px 0; padding-left: 18px; }
-    .result li { margin: 8px 0; font-size: 13px; line-height: 1.45; }
-    .result .muted, .muted { color: var(--muted); }
-    .result .why { font-size: 13px; line-height: 1.5; }
-    .note {
-      margin-top: 12px;
-      font-size: 11px;
-      line-height: 1.45;
-      color: var(--muted);
-      border-left: 3px solid rgba(224,90,106,.5);
-      padding-left: 10px;
-    }
-    .empty {
-      text-align: center;
-      color: var(--muted);
-      padding: 30px 10px;
-      font-size: 14px;
-    }
-    footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.5;
-      padding: 20px 14px 40px;
-    }
-    @media (min-width: 720px) {
-      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      header { padding: 14px 20px 12px; }
-      main { padding: 20px 20px 100px; }
-      .brand h1 { font-size: 20px; }
-    }
+    summary::-webkit-details-marker { display: none; } summary::after { content: "+"; color: var(--accent2); font-size: 16px; }
+    details[open] summary::after { content: "−"; }
+    details p { margin: 12px 0 0; color: #9e9eab; font-size: 14px; line-height: 1.6; background: rgba(0,0,0,0.25); padding: 12px; border-radius: 6px; border-left: 2px solid var(--accent); }
+    .builder { background: linear-gradient(180deg, var(--card2), var(--card)); border: 1px solid var(--line); border-radius: 16px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+    .builder h2 { margin: 0 0 6px; font-size: 20px; text-align: center; }
+    .builder .lead { margin: 0 0 20px; color: var(--muted); font-size: 13px; text-align: center; line-height: 1.4; }
+    label.field { display: block; margin-bottom: 16px; }
+    label.field span { display: block; font-size: 11px; color: #999; margin-bottom: 6px; font-weight: 700; text-transform: uppercase; }
+    select, textarea { width: 100%; background: #0a0a0d; color: var(--text); border: 1px solid #2a2a35; border-radius: 8px; padding: 12px; font: inherit; font-size: 14px; outline: none; transition: 0.2s; }
+    select:focus, textarea:focus { border-color: var(--accent2); }
+    .btn { width: 100%; border: 0; border-radius: 10px; padding: 16px; font: inherit; font-weight: 900; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: #fff; background: linear-gradient(180deg, var(--accent2), var(--accent)); box-shadow: 0 6px 20px rgba(140,14,26,0.4); cursor: pointer; transition: 0.1s; }
+    .btn:active { transform: scale(0.98); }
+    .result { margin-top: 20px; border-radius: 10px; border: 1px solid var(--line); background: rgba(0,0,0,0.4); padding: 16px; display: none; }
+    .result.visible { display: block; animation: fadeIn 0.4s; }
+    .result h3 { margin: 0 0 10px; font-size: 16px; color: var(--accent2); }
+    .result ul { margin: 0 0 16px; padding-left: 0; list-style: none; }
+    .result li { margin: 8px 0; font-size: 14px; line-height: 1.4; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border-left: 2px solid var(--accent); }
+    .result .why { font-size: 13px; color: #aaa; line-height: 1.5; margin-bottom: 0; }
+    .note { margin-top: 16px; font-size: 11px; line-height: 1.5; color: var(--muted); text-align: center; }
+    .game-container { background: #000; border: 1px solid var(--accent); border-radius: 16px; padding: 15px; text-align: center; position: relative; overflow: hidden; }
+    #gameCanvas { background: #08080a; border: 1px solid #222; border-radius: 8px; display: block; margin: 0 auto; max-width: 100%; touch-action: none; }
+    .game-ui { display: flex; justify-content: space-between; margin: 10px 0; font-weight: bold; font-size: 14px; }
+    .game-over { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.9); place-items: center; flex-direction: column; justify-content: center; z-index: 10; }
+    .game-over.active { display: flex; }
+    .game-over h3 { color: var(--blood); font-size: 24px; margin-bottom: 10px; }
+    .game-over p { margin-bottom: 20px; color: #ccc; }
+    .account-card { background: var(--card); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--line); }
+    .avatar-big { width: 80px; height: 80px; border-radius: 50%; background: var(--accent); margin: 0 auto 15px; display: grid; place-items: center; font-size: 32px; font-weight: bold; border: 2px solid var(--blood); }
+    .btn-outline { background: transparent; border: 1px solid var(--accent2); color: var(--accent2); }
+    .btn-outline:active { background: rgba(217,43,58,0.1); }
+    .input-group { margin-bottom: 15px; text-align: left; }
+    .input-group label { display: block; margin-bottom: 5px; font-size: 12px; color: var(--muted); }
+    .input-group input { width: 100%; padding: 12px; background: #000; border: 1px solid #2a2a35; color: #fff; border-radius: 8px; outline: none; }
+    .input-group input:focus { border-color: var(--accent2); }
+    footer { text-align: center; color: #444; font-size: 11px; padding: 20px; }
+    @media (min-width: 720px) { .cards { grid-template-columns: repeat(2, 1fr); } }
   </style>
 </head>
 <body>
   <header>
     <div class="brand">
-      <div class="logo">DBD</div>
+      <div class="logo">🩸</div>
       <div>
         <h1>DBD Mobile Guide</h1>
-        <p>Маньяки, выжившие, лор и генератор билдов</p>
+        <p>Туман ждет тебя</p>
+      </div>
+      <div id="authStatus" style="margin-left: auto; font-size: 12px; font-weight: 800; color: var(--accent2); cursor: pointer;">
+        Войти
       </div>
     </div>
-    <input id="search" class="search" type="search" placeholder="Поиск персонажа, лора или стиля…" autocomplete="off">
-    <nav class="tabs" aria-label="Разделы">
-      <button class="tab-btn active" data-tab="killers">Маньяки</button>
+    <input id="search" class="search" type="search" placeholder="Поиск персонажа..." autocomplete="off">
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="killers">Убийцы</button>
       <button class="tab-btn" data-tab="survivors">Выжившие</button>
-      <button class="tab-btn" data-tab="builder">Генератор билдов</button>
+      <button class="tab-btn" data-tab="builder">Билды</button>
+      <button class="tab-btn" data-tab="game">Туман</button>
+      <button class="tab-btn" data-tab="account" id="tabAccount" style="display:none;">Профиль</button>
     </nav>
   </header>
 
   <main>
     <section id="killers" class="tab-panel active">
-      <div class="panel-head">
-        <h2>Маньяки</h2>
-        <span id="killersCount" class="count"></span>
-      </div>
+      <div class="panel-head"><h2>Убийцы</h2><span id="killersCount" class="count"></span></div>
       <div id="killersCards" class="cards"></div>
     </section>
 
     <section id="survivors" class="tab-panel">
-      <div class="panel-head">
-        <h2>Выжившие</h2>
-        <span id="survivorsCount" class="count"></span>
-      </div>
+      <div class="panel-head"><h2>Выжившие</h2><span id="survivorsCount" class="count"></span></div>
       <div id="survivorsCards" class="cards"></div>
     </section>
 
     <section id="builder" class="tab-panel">
       <div class="builder">
         <h2>Генератор билдов</h2>
-        <p class="lead">Выберите роль, основной стиль и опишите, как вы играете. Генератор подберёт 4 перка и объяснит выбор.</p>
-
+        <p class="lead">Опиши свой стиль игры, и сущность тумана подберет идеальные перки.</p>
         <label class="field">
           <span>Роль</span>
           <select id="roleSelect">
             <option value="survivor">Выживший</option>
-            <option value="killer">Маньяк</option>
+            <option value="killer">Убийца</option>
           </select>
         </label>
-
         <label class="field">
-          <span>Основной стиль</span>
+          <span>Стиль</span>
           <select id="styleSelect"></select>
         </label>
-
         <label class="field">
-          <span>Опишите стиль игры</span>
-          <textarea id="styleText" placeholder="Например: люблю чинить генераторы, играть соло, не хочу быть обузой, часто лечу союзников и боюсь туннеля. Или: давление на генераторы, агрессивная погоня, анти-луп, играю на мобильном маньяке."></textarea>
+          <span>Описание стиля</span>
+          <textarea id="styleText" placeholder="Например: люблю чинить генераторы, играть в соло, боюсь туннеля... Или: агрессивная погоня, контроль генераторов."></textarea>
         </label>
-
-        <button id="generateBtn" class="btn" type="button">Сгенерировать билд</button>
-
+        <button id="generateBtn" class="btn" type="button">Призвать билд</button>
         <div id="buildResult" class="result" aria-live="polite"></div>
-        <div class="note">Это эвристическая рекомендация, а не мета-тирлист. Билд зависит от патча, карты, навыка и команды. Для точной мета-оптимизации проверяйте актуальные гайды.</div>
+        <div class="note">* Если билд не понравился, просто нажми кнопку еще раз — сущность выдаст альтернативу из подходящих.</div>
       </div>
+    </section>
+
+    <section id="game" class="tab-panel">
+      <div class="panel-head"><h2>Скиталец Туманa</h2></div>
+      <div class="game-container">
+        <div class="game-ui">
+          <span>Кровь: <span id="scoreVal">0</span></span>
+          <span>Рекорд: <span id="highScoreVal">0</span></span>
+        </div>
+        <canvas id="gameCanvas" width="300" height="400"></canvas>
+        <div class="game-over" id="gameOverScreen">
+          <h3>Ты потерян в тумане...</h3>
+          <p>Собрано: <span id="finalScore">0</span></p>
+          <button class="btn" onclick="resetGame()" style="width: auto; padding: 10px 30px;">Снова</button>
+        </div>
+        <p class="note" style="margin-top: 15px;">Зажми и веди палец (или мышку) по экрану, чтобы двигать фонарь и собирать капли крови.</p>
+      </div>
+    </section>
+
+    <section id="account" class="tab-panel">
+      <div class="panel-head"><h2>Профиль</h2></div>
+      <div id="accountContent"></div>
     </section>
   </main>
 
   <footer>
-    Фанатский мобильный справочник по Dead by Daylight. Dead by Daylight и персонажи принадлежат Behaviour Interactive и правообладателям. Сайт не связан с разработчиками.
+    Фанатский проект. Dead by Daylight © Behaviour Interactive.
   </footer>
-
   <script>
-    const killers = [
-      {
-        name: "Мясник (The Trapper)",
-        alias: "Эван Макмиллан · сложность: средняя",
-        tags: ["зонирование", "контроль зоны", "погоня"],
-        desc: "Ставит медвежьи капканы, запирает петли и заставляет выживших менять маршрут.",
-        lore: "Сын жестокого владельца шахт. После бунта рабочих Эван убил отца и занял его место, превратив шахты в смертельную ловушку."
-      },
-      {
-        name: "Призрак (The Wraith)",
-        alias: "Филип Ойомо · сложность: низкая",
-        tags: ["стелс", "мобильность", "информация"],
-        desc: "Прячется в невидимости и внезапно атакует, хорошо ловит невнимательных выживших.",
-        lore: "Иммигрант, работавший на свалке. Найдя тело в машине хозяина, Филипп понял правду и убил его, а затем исчез в тумане."
-      },
-      {
-        name: "Деревенщина (The Hillbilly)",
-        alias: "Макс Томпсон мл. · сложность: низкая/средняя",
-        tags: ["мобильность", "погоня", "давление"],
-        desc: "Быстрый рывок по прямой, сильное давление на открытых участках и в коридорах.",
-        lore: "Родители держали его запертым на ферме. Выросший в изоляции и уродстве, Макс вырвался и убил их."
-      },
-      {
-        name: "Медсестра (The Nurse)",
-        alias: "Салли Смитсон · сложность: высокая",
-        tags: ["мобильность", "анти-луп", "погоня"],
-        desc: "Телепортируется сквозь препятствия. Сильна против петель, но требует предсказания.",
-        lore: "Медсестра, потерявшая мужа и пациентов. Горе и чувство вины сломали её рассудок, и она начала убивать."
-      },
-      {
-        name: "Форма (The Shape)",
-        alias: "Майкл Майерс · сложность: средняя",
-        tags: ["стелс", "endgame", "погоня"],
-        desc: "Следит, накапливает Зло и становится опаснее ближе к концу матча.",
-        lore: "Майкл с детства проявлял холодную жестокость. После убийства сестры он стал воплощением необъяснимого зла Хэддонфилда."
-      },
-      {
-        name: "Ведьма (The Hag)",
-        alias: "Лиза Шервуд · сложность: средняя",
-        tags: ["контроль зоны", "телепорт", "погоня"],
-        desc: "Расставляет фантомные ловушки и телепортируется к ним, контролируя зону.",
-        lore: "После похищения и каннибализма Лиза вернулась изменённой. Она питается плотью и создаёт ловушки из останков."
-      },
-      {
-        name: "Доктор (The Doctor)",
-        alias: "Герман Картер · сложность: средняя/высокая",
-        tags: ["информация", "контроль", "давление"],
-        desc: "Вызывает безумие, раскрывает позиции и усложняет взаимодействие.",
-        lore: "Врач-экспериментатор, чьи методы стали чудовищными. Он изучал страх и боль, пока сам не превратился в монстра."
-      },
-      {
-        name: "Охотница (The Huntress)",
-        alias: "Анна · сложность: средняя",
-        tags: ["погоня", "метательные", "давление"],
-        desc: "Бросает топоры на дистанции и наказывает за открытые линии и предсказуемые петли.",
-        lore: "Девочка, выросшая в лесу. Она охотилась на людей и забирала детей, считая себя их матерью."
-      },
-      {
-        name: "Каннибал (The Cannibal)",
-        alias: "Бабба Сойер · сложность: низкая",
-        tags: ["погоня", "давление", "контроль зоны"],
-        desc: "Мощный бензопильный рывок, силён в узких местах и против групповых спасений.",
-        lore: "Член семьи каннибалов из Техаса. Бабба привязан к семье и выполняет её жестокие ритуалы."
-      },
-      {
-        name: "Кошмар (The Nightmare)",
-        alias: "Фредди Крюгер · сложность: средняя",
-        tags: ["контроль", "информация", "давление"],
-        desc: "Затягивает в сон, ставит ловушки и контролирует генераторы.",
-        lore: "Убийца детей, которого линчевали родители. Он вернулся как сущность снов, чтобы мстить."
-      },
-      {
-        name: "Свинья (The Pig)",
-        alias: "Аманда Янг · сложность: средняя",
-        tags: ["стелс", "контроль", "давление"],
-        desc: "Скрытно подкрадывается и надевает ловушки, заставляя тратить время на головоломки.",
-        lore: "Ученица Конструктора. Аманда переняла философию игр со смертью, но стала более жестокой и циничной."
-      },
-      {
-        name: "Клоун (The Clown)",
-        alias: "Кеннет Чейз · сложность: средняя",
-        tags: ["погоня", "зонирование", "анти-луп"],
-        desc: "Замедляет выживших газом и отрезает пути в петлях.",
-        lore: "Клоун-убийца, который использовал цирк как прикрытие. Он коллекционировал пальцы жертв."
-      },
-      {
-        name: "Дух (The Spirit)",
-        alias: "Рин Ямаока · сложность: высокая",
-        tags: ["мобильность", "анти-луп", "погоня"],
-        desc: "Входит в мир духов и совершает быстрые рывки, ломая привычные петли.",
-        lore: "Дочь жестокого отца. После убийства Рин вернулась как мстительный дух, связанный с туманом."
-      },
-      {
-        name: "Легион (The Legion)",
-        alias: "Фрэнк, Джули, Сьюзи, Джоуи · сложность: средняя",
-        tags: ["мобильность", "давление", "информация"],
-        desc: "Быстрый режим преследования и цепная атака, хорошо давит на разрозненных выживших.",
-        lore: "Банда подростков, чья жестокость вышла из-под контроля. Они нападали на людей и скрывались от последствий."
-      },
-      {
-        name: "Чума (The Plague)",
-        alias: "Адирис · сложность: средняя/высокая",
-        tags: ["контроль", "информация", "давление"],
-        desc: "Распространяет болезнь и заставляет выживших выбирать между лечением и риском.",
-        lore: "Верховная жрица, которая пыталась спасти народ от болезни. Её вера и страдания превратились в проклятие."
-      },
-      {
-        name: "Призрачное лицо (The Ghost Face)",
-        alias: "Дэнни Джонсон · сложность: средняя",
-        tags: ["стелс", "информация", "погоня"],
-        desc: "Прячется, подкрадывается и раскрывает выживших через отметки.",
-        lore: "Журналист, убивавший ради сенсаций. Он создал образ Призрачного лица и наслаждался страхом."
-      },
-      {
-        name: "Демогоргон (The Demogorgon)",
-        alias: "Обратная сторона · сложность: средняя",
-        tags: ["погоня", "зонирование", "мобильность"],
-        desc: "Создаёт порталы и совершает прыжковые атаки, контролируя участки карты.",
-        lore: "Хищник из Обратной стороны, связанный с Хокинсом. Он охотится по следам и запаху."
-      },
-      {
-        name: "Они (The Oni)",
-        alias: "Кадзан Ямаока · сложность: высокая",
-        tags: ["погоня", "давление", "мобильность"],
-        desc: "Накапливает кровь и в ярости становится крайне быстрым и опасным.",
-        lore: "Самурай, преданный собственной яростью. Убив брата, он стал демоном мести."
-      },
-      {
-        name: "Стрелок (The Deathslinger)",
-        alias: "Калеб Куинн · сложность: средняя",
-        tags: ["контроль", "погоня", "метательные"],
-        desc: "Притягивает выживших гарпуном и наказывает за открытые позиции.",
-        lore: "Охотник за головами и изобретатель. Его гарпун стал продолжением жестокого ремесла."
-      },
-      {
-        name: "Палач (The Executioner)",
-        alias: "Пирамидоголовый · сложность: средняя",
-        tags: ["зонирование", "контроль", "погоня"],
-        desc: "Оставляет следы и наказывает за пересечение зоны, хорошо контролирует петли.",
-        lore: "Сущность из Silent Hill, воплощающая наказание и вину. Он приходит к тем, кто не может искупить прошлое."
-      },
-      {
-        name: "Блайт (The Blight)",
-        alias: "Талбот Граймс · сложность: высокая",
-        tags: ["мобильность", "давление", "погоня"],
-        desc: "Разгоняется и отскакивает от препятствий, создавая хаотичное давление.",
-        lore: "Учёный, искавший лекарство и ставший зависимым от собственного эксперимента. Теперь он одержим туманом."
-      },
-      {
-        name: "Близнецы (The Twins)",
-        alias: "Шарлотта и Виктор Дешей · сложность: высокая",
-        tags: ["карта", "давление", "информация"],
-        desc: "Управляют двумя телами: Виктор ищет и атакует, Шарлотта давит на карту.",
-        lore: "Брошенные дети, выжившие в жестоком мире. Их связь стала симбиозом, а любовь — орудием убийства."
-      },
-      {
-        name: "Трюкач (The Trickster)",
-        alias: "Джи-Вун Хак · сложность: средняя",
-        tags: ["погоня", "метательные", "давление"],
-        desc: "Метает ножи, накапливает разрез и наказывает в погоне на дистанции.",
-        lore: "Поп-звезда с садистскими наклонностями. Он превращал боль и смерть в своё извращённое искусство."
-      },
-      {
-        name: "Немезис (The Nemesis)",
-        alias: "Тиран Umbrella · сложность: средняя",
-        tags: ["погоня", "давление", "контроль"],
-        desc: "Использует щупальце и зомби, создавая постоянное давление.",
-        lore: "Биологическое оружие Umbrella. Он преследует цель с методичной жестокостью."
-      },
-      {
-        name: "Сенобит (The Cenobite)",
-        alias: "Пинхед · сложность: высокая",
-        tags: ["контроль", "анти-луп", "информация"],
-        desc: "Запускает цепь и ловушки, наказывает за жадность и контролирует петли.",
-        lore: "Служитель ордена Гаш, открывающий путь к боли. Он считает страдание формой наслаждения."
-      },
-      {
-        name: "Художница (The Artist)",
-        alias: "Кармина Мора · сложность: средняя",
-        tags: ["информация", "контроль", "давление"],
-        desc: "Отправляет воронов на разведку и атаку, хорошо контролирует генераторы.",
-        lore: "Художница, пережившая трагедию и связанная с воронами. Её боль превратилась в тёмные творения."
-      },
-      {
-        name: "Онрё (The Onryo)",
-        alias: "Садако Ямамура · сложность: средняя",
-        tags: ["стелс", "контроль", "давление"],
-        desc: "Проклинает через кассеты и телепортируется, создавая скрытое давление.",
-        lore: "Девочка с экстрасенсорными способностями, убитая и возвращённая как мстительный дух."
-      },
-      {
-        name: "Дредж (The Dredge)",
-        alias: "Сгусток тьмы · сложность: средняя",
-        tags: ["контроль", "стелс", "давление"],
-        desc: "Телепортируется между шкафами и создаёт зоны страха, ломая привычную игру.",
-        lore: "Коллективная тьма, рождённая из страданий и ритуалов. Дредж питается страхом и становится сильнее в ночи."
-      },
-      {
-        name: "Мастермайнд (The Mastermind)",
-        alias: "Альберт Вескер · сложность: высокая",
-        tags: ["мобильность", "погоня", "давление"],
-        desc: "Быстрый рывок и сильная погоня, требует точного контроля дистанции.",
-        lore: "Бывший сотрудник Umbrella и манипулятор, стремящийся к превосходству. Он считает людей ресурсом."
-      },
-      {
-        name: "Рыцарь (The Knight)",
-        alias: "Тархош Ковач · сложность: средняя",
-        tags: ["контроль", "давление", "погоня"],
-        desc: "Вызывает стражей и контролирует участки, заставляя выживших менять маршрут.",
-        lore: "Жестокий средневековый командир, преданный насилию. Его стражи — эхо павших соратников."
-      },
-      {
-        name: "Торговка черепами (The Skull Merchant)",
-        alias: "Адриана Имай · сложность: средняя",
-        tags: ["контроль", "информация", "давление"],
-        desc: "Использует дроны и ловушки, контролирует территорию и раскрывает передвижения.",
-        lore: "Богатая охотница, превратившая убийства в соревнование. Она изучает жертв как трофеи."
-      },
-      {
-        name: "Сингулярность (The Singularity)",
-        alias: "HUX-A7-13 · сложность: высокая",
-        tags: ["информация", "карта", "давление"],
-        desc: "Размещает биоподы, телепортируется и создаёт карту контроля.",
-        lore: "Искусственный интеллект, получивший свободу и одержимость совершенствованием через охоту."
-      },
-      {
-        name: "Ксеноморф (The Xenomorph)",
-        alias: "Чужой · сложность: средняя",
-        tags: ["погоня", "стелс", "мобильность"],
-        desc: "Использует туннели и хвостовую атаку, быстро меняет позицию.",
-        lore: "Хищник из космоса, идеальный организм для выживания и убийства. Туман стал для него новой средой."
-      },
-      {
-        name: "Хороший парень (The Good Guy)",
-        alias: "Чаки · сложность: средняя",
-        tags: ["стелс", "погоня", "давление"],
-        desc: "Скрытно подкрадывается, совершает рывки и любит неожиданные атаки.",
-        lore: "Кукла, в которую переселилась душа убийцы. Чаки наслаждается хаосом и не боится быть смешным."
-      },
-      {
-        name: "Неизвестный (The Unknown)",
-        alias: "Криптид · сложность: средняя",
-        tags: ["стелс", "контроль", "информация"],
-        desc: "Создаёт зоны страха и нестабильные атаки, путая выживших.",
-        lore: "Сущность, рождённая из слухов и неверных воспоминаний. Чем меньше о ней знают, тем сильнее она становится."
-      },
-      {
-        name: "Лич (The Lich)",
-        alias: "Векна · сложность: высокая",
-        tags: ["контроль", "магия", "давление"],
-        desc: "Использует заклинания и артефакты, контролирует зоны и наказывает за ошибки.",
-        lore: "Могущественный архимаг и лич, стремящийся к власти над реальностью. Он играет с жертвами как с фигурами."
-      },
-      {
-        name: "Тёмный лорд (The Dark Lord)",
-        alias: "Дракула · сложность: высокая",
-        tags: ["мобильность", "погоня", "давление"],
-        desc: "Меняет формы, совершает быстрые атаки и контролирует дистанцию.",
-        lore: "Вампир-лорд, воплощение аристократической жестокости. Он рассматривает охоту как древний ритуал."
-      },
-      {
-        name: "Псарь (The Houndmaster)",
-        alias: "Порция Мэй · сложность: средняя",
-        tags: ["контроль", "погоня", "информация"],
-        desc: "Использует собаку для поиска и давления, контролирует маршруты.",
-        lore: "Охотница с жестоким прошлым, для которой верность собаки была единственной формой близости."
-      },
-      {
-        name: "Гуль (The Ghoul)",
-        alias: "Кен Канеки · сложность: высокая",
-        tags: ["погоня", "мобильность", "давление"],
-        desc: "Агрессивная погоня и рывки, требует хорошего чтения петель.",
-        lore: "Получеловек-полугуль, разрывающийся между природой и остатками человечности."
-      }
-    ];
+  // ==========================================
+  // 1. БАЗА ДАННЫХ (ОФИЦИАЛЬНЫЙ ПЕРЕВОД + СОВЕТЫ)
+  // ==========================================
+  
+  const killers = [
+    { name: "Охотник (The Trapper)", alias: "Эван Макмиллан", tags: ["Зонирование", "Контроль"], desc: "Расставляет медвежьи капканы, заставляя выживших менять маршрут.", lore: "Сын жестокого владельца шахт. После бунта рабочих Эван убил отца и занял его место, превратив шахты в смертельную ловушку. Его главное оружие — не капканы, а страх жертв перед неизбежным.", counter: "Следите за землей под ногами. Если вас поймали, не паникуйте и пытайтесь освободиться, пока Охотник далеко. Если вы видите капкан, его можно обезвредить, зажав кнопку действия, но убедитесь, что Охотник не смотрит в вашу сторону." },
+    { name: "Призрак (The Wraith)", alias: "Филип Ойомо", tags: ["Стелс", "Мобильность"], desc: "Прячется в невидимости и внезапно атакует.", lore: "Иммигрант, работавший на свалке. Найдя тело в машине хозяина, Филипп понял правду и убил его в приступе ярости, а затем исчез в тумане, став тем, кого невозможно увидеть.", counter: "Слушайте звук его рычания и колокольчика, когда он становится невидимым. Если он рядом, лучше не прятаться в кустах, а бежать в открытую зону. Используйте перки на аурное зрение, чтобы видеть его сквозь стены." },
+    { name: "Деревенщина (The Hillbilly)", alias: "Макс Томпсон мл.", tags: ["Мобильность", "Погоня"], desc: "Быстрый рывок по прямой, сильное давление на открытых участках.", lore: "Родители держали его запертым на ферме, стыдясь его уродства. Выросший в изоляции и ненависти, Макс вырвался на свободу и безжалостно убил своих мучителей.", counter: "Никогда не бегите по прямой. Как только слышите рев бензопилы, прячьтесь за препятствия (деревья, стены) или резко меняйте направление (поворачивайте на 90 градусов), чтобы он врезался в стену." },
+    { name: "Медсестра (The Nurse)", alias: "Салли Смитсон", tags: ["Анти-луп", "Погоня"], desc: "Телепортируется сквозь препятствия. Сильна против петель.", lore: "Медсестра, потерявшая мужа и пациентов. Горе и чувство вины сломали её рассудок. Теперь она телепортируется сквозь стены и реальность, неся лишь смерть и агонию.", counter: "Не пытайтесь крутить петли вокруг стен. Медсестра телепортируется сквозь них. Вместо этого используйте высокие препятствия и ломайте дистанцию, когда она совершает рывок (после рывка она на секунду оглушена)." },
+    { name: "Форма (The Shape)", alias: "Майкл Майерс", tags: ["Стелс", "Endgame"], desc: "Следит, накапливает Зло и становится опаснее ближе к концу.", lore: "Майкл с детства проявлял холодную жестокость. После убийства сестры он стал воплощением необъяснимого зла Хэддонфилда. У него нет мотивов, только чистая тьма.", counter: "Постоянно оглядывайтесь. Если он смотрит на вас, он накапливает Зло. Не давайте ему смотреть на вас слишком долго. Когда он достигает третьей стадии (Зло 3), он может убить вас с одного удара — в этот момент нужно играть максимально скрытно." },
+    { name: "Ведьма (The Hag)", alias: "Лиза Шервуд", tags: ["Контроль зоны", "Телепорт"], desc: "Расставляет фантомные ловушки и телепортируется к ним.", lore: "После похищения и каннибализма Лиза вернулась изменённой. Она питается плотью и создаёт ловушки из останков своих жертв, контролируя каждый шаг в своих владениях.", counter: "Приседайте (Crouch), чтобы передвигаться бесшумно и не активировать её ловушки. Если вы активировали ловушку, сразу же бегите в противоположную сторону, так как Ведьма телепортируется к ней." },
+    { name: "Доктор (The Doctor)", alias: "Герман Картер", tags: ["Информация", "Давление"], desc: "Вызывает безумие, раскрывает позиции и усложняет взаимодействие.", lore: "Врач-экспериментатор, чьи методы стали чудовищными. Он изучал страх и боль как науку, пока сам не превратился в монстра. Его электрошок выжигает разум.", counter: "Его шок-терапия раскрывает вашу ауру и не даёт делать действия. Находясь в безумии, старайтесь держаться подальше от генераторов, чтобы он не нашёл вас. Когда он выпускает статическое поле, лучше сразу выбежать из него." },
+    { name: "Охотница (The Huntress)", alias: "Анна", tags: ["Метательные", "Погоня"], desc: "Бросает топоры на дистанции и наказывает за открытые линии.", lore: "Девочка, выросшая в лесу. Она охотилась на людей и забирала детей, считая себя их матерью. Её колыбельные заглушают крики жертв.", counter: "Прячьтесь за высокими стенами и деревьями, чтобы она не могла бросить топор. Если слышите её колыбельную, она заряжает бросок. В этот момент двигайтесь зигзагом." },
+    { name: "Каннибал (The Cannibal)", alias: "Бабба Сойер", tags: ["Погоня", "Давление"], desc: "Мощный бензопильный рывок, силён в узких местах.", lore: "Член семьи каннибалов из Техаса. Бабба привязан к семье и выполняет её жестокие ритуалы. Его бензопила ревет, предвещая скорую расправу.", counter: "Не прячьтесь в шкафы и не пытайтесь спасать союзников на его глазах. Если он использует бензопилу, попытайтесь забежать за угол. Он очень медленный, когда не использует рывок, используйте доски и окна." },
+    { name: "Кошмар (The Nightmare)", alias: "Фредди Крюгер", tags: ["Контроль", "Информация"], desc: "Затягивает в сон, ставит ловушки и контролирует генераторы.", lore: "Убийца детей, которого линчевали родители. Он вернулся как сущность снов, чтобы мстить. В его мире кошмары становятся явью, а сон — смертельным.", counter: "Не засыпайте! Если вы слышите музыку, вы засыпаете. Чтобы проснуться, найдите будильник или попросите союзника разбудить вас. Пока вы спите, он видит вас сквозь стены и может ставить ловушки на генераторы." },
+    { name: "Свинья (The Pig)", alias: "Аманда Янг", tags: ["Стелс", "Контроль"], desc: "Скрытно подкрадывается и надевает ловушки на голову.", lore: "Ученица Конструктора. Аманда переняла философию игр со смертью, но стала более жестокой. Она верит, что выживает лишь тот, кто готов на всё.", counter: "Снимите ловушку с головы как можно быстрее. Для этого нужно найти нужный генератор. Если вы ранены, ловушка активируется, поэтому сначала вылечитесь, а потом уже ремонтируйте генераторы. Слушайте её рычание, когда она прячется." },
+    { name: "Клоун (The Clown)", alias: "Кеннет Чейз", tags: ["Анти-луп", "Погоня"], desc: "Замедляет выживших газом и отрезает пути в петлях.", lore: "Клоун-убийца, который использовал цирк как прикрытие. Он коллекционировал пальцы жертв. Его смех и бутылки с ядовитым газом несут лишь удушье.", counter: "Не стойте в облаке газа. Если вы попали в него, вы замедлитесь. В петлях старайтесь не дать ему отрезать вас газом, уходите в открытые зоны, где газ не так эффективен." },
+    { name: "Дух (The Spirit)", alias: "Рин Ямаока", tags: ["Мобильность", "Анти-луп"], desc: "Входит в мир духов и совершает быстрые рывки, ломая петли.", lore: "Дочь жестокого отца. После убийства Рин вернулась как мстительный дух, связанный с туманом. Она рассекает реальность, слыша лишь зов мести.", counter: "Когда она входит в мир духов, она не видит вас, но слышит ваши шаги. Стойте на месте или идите шагом (без бега), чтобы сбить её с толку. Не бегите по прямой." },
+    { name: "Легион (The Legion)", alias: "Фрэнк и банда", tags: ["Мобильность", "Давление"], desc: "Быстрый режим преследования и цепная атака.", lore: "Банда подростков, чья жестокость вышла из-под контроля. Они нападали на людей и скрывались от последствий, пока туман не поглотил их всех.", counter: "Когда вы ранены и у вас есть эффект 'Глубокие раны', не пытайтесь лечиться. Просто бегите и тяните время, пока эффект не спадет. Не собирайтесь в группы — его способность 'Цепная атака' может ранить всех сразу." },
+    { name: "Чума (The Plague)", alias: "Адирис", tags: ["Контроль", "Давление"], desc: "Распространяет болезнь и заставляет выбирать между лечением и риском.", lore: "Верховная жрица, которая пыталась спасти народ от болезни. Её вера и страдания превратились в проклятие, извергающее фонтаны черной крови.", counter: "Решайте: лечиться у фонтана или нет. Если вылечитесь, Чума получит мощную атаку, но вы перестанете болеть. Если не лечиться, вы будете постоянно кашлять и выдавать себя." },
+    { name: "Призрачное лицо (Ghost Face)", alias: "Дэнни Джонсон", tags: ["Стелс", "Погоня"], desc: "Прячется, подкрадывается и раскрывает выживших.", lore: "Журналист, убивавший ради сенсаций. Он создал образ Призрачного лица и наслаждался страхом. Он всегда смотрит на вас из темноты.", counter: "Смотрите по сторонам. Если вы видите, что он смотрит на вас, не давайте ему накопить 100% слежки. Прячьтесь за стены, чтобы сбросить его метку." },
+    { name: "Демогоргон (The Demogorgon)", alias: "Хищник", tags: ["Погоня", "Зонирование"], desc: "Создаёт порталы и совершает прыжковые атаки.", lore: "Хищник из Обратной стороны, связанный с Хокинсом. Он охотится по следам и запаху. Туман для него — новая идеальная среда обитания.", counter: "Уничтожайте его порталы, если у вас есть время. Когда он ныряет в портал, у него есть задержка перед выходом. В этот момент лучше отойти от места, где он исчез." },
+    { name: "Они (The Oni)", alias: "Кадзан Ямаока", tags: ["Погоня", "Мобильность"], desc: "Накапливает кровь и в ярости становится крайне быстрым.", lore: "Самурай, преданный собственной яростью. Убив брата, он стал демоном мести. В его крови пылает адское пламя, а катана жаждет новой жатвы.", counter: "Когда он в ярости, не давайте ему ударить вас, иначе он поглотит кровь и продлит ярость. Используйте доски и окна, он уязвим к оглушениям. Если он собирает кровь с земли, не стойте рядом." },
+    { name: "Стрелок (The Deathslinger)", alias: "Калеб Куинн", tags: ["Контроль", "Метательные"], desc: "Притягивает выживших гарпуном на дистанции.", lore: "Охотник за головами и изобретатель. Его гарпун стал продолжением жестокого ремесла. Он притягивает жертв прямо в свои объятия.", counter: "Прячьтесь за стены и доски, чтобы он не попал гарпуном. Если он попал, пытайтесь сломать цепь, пробегая за препятствие. Не бегите по прямой." },
+    { name: "Палач (The Executioner)", alias: "Пирамидоголовый", tags: ["Зонирование", "Контроль"], desc: "Оставляет следы и наказывает за пересечение зоны.", lore: "Сущность из Сайлент Хилл, воплощающая наказание и вину. Он приходит к тем, кто не может искупить прошлое, чтобы даровать им вечные муки.", counter: "Если вы наступили в его лужу крови (след), найдите другой путь, чтобы он не мог телепортироваться к вам. Когда он использует атаку по площади, пригнитесь (Crouch), чтобы избежать урона." },
+    { name: "Мор (The Blight)", alias: "Талбот Граймс", tags: ["Мобильность", "Давление"], desc: "Разгоняется и отскакивает от препятствий.", lore: "Учёный, искавший лекарство и ставший зависимым от собственного эксперимента. Теперь он одержим туманом и мчится сквозь него на огромной скорости.", counter: "Петляйте вокруг объектов. Если он разогнался, попробуйте резко повернуть за угол, чтобы он врезался в стену. После столкновения он на секунду замирает." },
+    { name: "Близнецы (The Twins)", alias: "Шарлотта и Виктор", tags: ["Карта", "Давление"], desc: "Управляют двумя телами: Виктор ищет, Шарлотта давит.", lore: "Брошенные дети, выжившие в жестоком мире. Их связь стала симбиозом, а любовь — орудием убийства. Где Шарлотта, там всегда рядом её Виктор.", counter: "Когда Виктор (маленький) прыгает на вас, ударьте его ногой, чтобы он упал. Убегайте от Шарлотты, если она рядом. Когда Виктор убит, она не может управлять им какое-то время." },
+    { name: "Трюкач (The Trickster)", alias: "Джи-Вун Хак", tags: ["Метательные", "Погоня"], desc: "Метает ножи, накапливает разрез и наказывает на дистанции.", lore: "Поп-звезда с садистскими наклонностями. Он превращал боль и смерть в своё извращённое искусство. Его улыбка сияет, пока ножи летят в цель.", counter: "Не стойте на месте, когда он кидает ножи. Двигайтесь непредсказуемо. Старайтесь спрятаться за препятствиями, чтобы он не накопил на вас 'Разрез'." },
+    { name: "Немезис (The Nemesis)", alias: "Тиран", tags: ["Погоня", "Контроль"], desc: "Использует щупальце и зомби, создавая давление.", lore: "Биологическое оружие корпорации Амбрелла. Он преследует цель с методичной жестокостью, не зная ни страха, ни жалости.", counter: "Уворачивайтесь от его щупальца, двигаясь в сторону. Не поднимайте зомби, если они на пути. Если он мутировал до 2-й стадии, его щупальце ломает доски." },
+    { name: "Сенобит (The Cenobite)", alias: "Пинхед", tags: ["Контроль", "Анти-луп"], desc: "Запускает цепь и ловушки, наказывает за жадность.", lore: "Служитель ордена Гаш, открывающий путь к боли. Он считает страдание формой наслаждения. Его цепи разрывают реальность.", counter: "Не трогайте конфигурацию куба (если не уверены). Если куб у вас в руках, решите: решать головоломку или нет. Если он запускает цепи, бегите в сторону от цепей." },
+    { name: "Художница (The Artist)", alias: "Кармина Мора", tags: ["Информация", "Контроль"], desc: "Отправляет воронов на разведку и атаку.", lore: "Художница, пережившая трагедию и связанная с воронами. Её боль превратилась в тёмные творения из чернил и крови.", counter: "Уничтожайте её воронов, если можете. Когда она запускает воронов в вашу сторону, бегите от них, они взрываются. Не стойте в местах, где уже есть её вороны." },
+    { name: "Онрё (The Onryo)", alias: "Садако Ямамура", tags: ["Стелс", "Давление"], desc: "Проклинает через кассеты и телепортируется.", lore: "Девочка с экстрасенсорными способностями, убитая и возвращённая как мстительный дух. Семь дней — и ты умрешь.", counter: "Не смотрите на неё излишне долго. Когда она телепортируется, она появляется из телевизора. Отключайте телевизоры, чтобы она не могла использовать их для телепортации." },
+    { name: "Грязь (The Dredge)", alias: "Сгусток тьмы", tags: ["Контроль", "Стелс"], desc: "Телепортируется между шкафами и создаёт зоны страха.", lore: "Коллективная тьма, рождённая из страданий и ритуалов. Грязь питается страхом и становится сильнее в ночи, превращаясь в кошмар из плоти.", counter: "Когда сгущается тьма (Ночь), спрячьтесь или найдите безопасное место. Не сидите в шкафах рядом с генераторами, он может телепортироваться к вам. Отключайте генератор, чтобы он не мог использовать его как точку." },
+    { name: "Кукловод (The Mastermind)", alias: "Альберт Вескер", tags: ["Мобильность", "Погоня"], desc: "Быстрый рывок и сильная погоня.", lore: "Бывший сотрудник Амбреллы и манипулятор, стремящийся к превосходству. Он считает людей ресурсом.", counter: "Бегите зигзагом, чтобы он не смог попасть в вас своим рывком. Если он близко, используйте доски. Не давайте ему отрезать вас у окна." },
+    { name: "Рыцарь (The Knight)", alias: "Тархош Ковач", tags: ["Контроль", "Погоня"], desc: "Вызывает стражей и контролирует участки.", lore: "Жестокий средневековый командир, преданный насилию. Его стражи — эхо павших соратников.", counter: "Он может призвать стражей. Уничтожайте знамя, которое он ставит, чтобы стражи исчезли. Двигайтесь вокруг объектов и не давайте зажать себя в углу." },
+    { name: "Торговка черепами (The Skull Merchant)", alias: "Адриана Имай", tags: ["Контроль", "Информация"], desc: "Использует дроны и ловушки, контролирует территорию.", lore: "Богатая охотница, превратившая убийства в соревнование. Она изучает жертв как трофеи.", counter: "Сбивайте её дроны (если можете). Когда вас сканирует дрон, у вас появляется метка, и она видит вас. Уходите из зоны действия дронов." },
+    { name: "Сингулярность (The Singularity)", alias: "HUX-A7-13", tags: ["Информация", "Карта"], desc: "Размещает биоподы, телепортируется и создаёт карту.", lore: "Искусственный интеллект, получивший свободу и одержимость совершенствованием через охоту.", counter: "Уничтожайте биоподы (камеры), которые он ставит. Если он телепортируется к вам, отбегайте от места телепорта, чтобы не попасть под удар." }
+  ];
 
-    const survivors = [
-      {
-        name: "Дуайт Фэрфилд",
-        origin: "Лидер · поддержка",
-        tags: ["поддержка", "информация", "генераторы"],
-        desc: "Командный игрок, полезен в координации и поддержке союзников.",
-        lore: "Скромный сотрудник, который в тумане стал лидером. Он учится брать ответственность и вести других."
-      },
-      {
-        name: "Мэг Томас",
-        origin: "Спринт · луп",
-        tags: ["луп", "мобильность", "выживание"],
-        desc: "Быстрая выжившая, хорошо держит петли и уводит маньяка.",
-        lore: "Легкоатлетка, стремившаяся к скорости. В тумане её упорство стало способом выжить."
-      },
-      {
-        name: "Клодетт Морэль",
-        origin: "Лечение · стелс",
-        tags: ["лечение", "стелс", "поддержка"],
-        desc: "Сильный медик и соло-выжившая, любит играть осторожно.",
-        lore: "Ботаник-интроверт, нашедшая в растениях смысл. Она помогает другим, оставаясь незаметной."
-      },
-      {
-        name: "Джейк Парк",
-        origin: "Стелс · генераторы",
-        tags: ["стелс", "генераторы", "выживание"],
-        desc: "Тихий игрок, хорошо работает с генераторами и избегает внимания.",
-        lore: "Сын богатой семьи, сбежавший в природу. Он не доверяет людям, но умеет выживать."
-      },
-      {
-        name: "Ниа Карлссон",
-        origin: "Луп · стелс",
-        tags: ["луп", "стелс", "выживание"],
-        desc: "Гибкая выжившая для агрессивных петель и неожиданных манёвров.",
-        lore: "Бунтарка из Швеции, привыкшая полагаться на скорость и импровизацию."
-      },
-      {
-        name: "Лори Строуд",
-        origin: "Endgame · луп",
-        tags: ["endgame", "луп", "анти-туннель"],
-        desc: "Хороша в затягивании матча и игре против преследования.",
-        lore: "Выжившая после нападения Майкла Майерса. Её жизнь стала борьбой с необъяснимым злом."
-      },
-      {
-        name: "Билл Овербек",
-        origin: "Поддержка · анти-туннель",
-        tags: ["поддержка", "анти-туннель", "выживание"],
-        desc: "Ветеран, который помогает союзникам и не боится рисковать.",
-        lore: "Старый солдат, привыкший к потерям. Он сражается не ради славы, а ради других."
-      },
-      {
-        name: "Дэвид Кинг",
-        origin: "Луп · агрессия",
-        tags: ["луп", "погоня", "выживание"],
-        desc: "Любит активные петли и давление на маньяка.",
-        lore: "Уличный боец и спортсмен, который не отступает. Его упрямство помогает ему в тумане."
-      },
-      {
-        name: "Квентин Смит",
-        origin: "Генераторы · поддержка",
-        tags: ["генераторы", "поддержка", "информация"],
-        desc: "Практичный игрок, ориентированный на задачи и помощь команде.",
-        lore: "Парень, боровшийся с кошмаром Фредди. Он знает, что страх можно пережить."
-      },
-      {
-        name: "Детектив Тапп",
-        origin: "Информация · погоня",
-        tags: ["информация", "погоня", "поддержка"],
-        desc: "Полезен в чтении карты и давлении на маньяка.",
-        lore: "Полицейский, расследовавший дело Пилы. Он привык видеть ложь и искать правду."
-      },
-      {
-        name: "Кейт Денсон",
-        origin: "Луп · поддержка",
-        tags: ["луп", "поддержка", "выживание"],
-        desc: "Универсальная выжившая для петель и командной игры.",
-        lore: "Певица, мечтавшая о сцене. В тумане она сохраняет тепло и веру в людей."
-      },
-      {
-        name: "Адам Фрэнсис",
-        origin: "Генераторы · поддержка",
-        tags: ["генераторы", "поддержка", "информация"],
-        desc: "Сбалансированный персонаж для задач и спасений.",
-        lore: "Учитель и писатель, оказавшийся в центре трагедии. Он ищет смысл даже в кошмаре."
-      },
-      {
-        name: "Джефф Йохансен",
-        origin: "Поддержка · стелс",
-        tags: ["поддержка", "стелс", "выживание"],
-        desc: "Тихий союзник, полезный в осторожных матчах.",
-        lore: "Музыкант и художник, который предпочитает помогать другим, оставаясь в тени."
-      },
-      {
-        name: "Джейн Ромеро",
-        origin: "Выживание · поддержка",
-        tags: ["выживание", "поддержка", "информация"],
-        desc: "Уверенная выжившая для командной игры и давления.",
-        lore: "Телеведущая, привыкшая быть на виду. В тумане она учится бороться за себя и других."
-      },
-      {
-        name: "Эш Уильямс",
-        origin: "Анти-туннель · хаос",
-        tags: ["анти-туннель", "выживание", "поддержка"],
-        desc: "Не боится быть целью и любит нестандартные ситуации.",
-        lore: "Продавец из S-Mart, ставший невольным героем. Он спасает мир с неловким юмором."
-      },
-      {
-        name: "Нэнси Уилер",
-        origin: "Информация · стелс",
-        tags: ["информация", "стелс", "генераторы"],
-        desc: "Осторожная выжившая, хорошо читает обстановку.",
-        lore: "Подруга Майка и свидетель странных событий в Хокинсе. Она не сдаётся даже перед неизвестным."
-      },
-      {
-        name: "Стив Харрингтон",
-        origin: "Луп · поддержка",
-        tags: ["луп", "поддержка", "анти-туннель"],
-        desc: "Универсал для петель и помощи союзникам.",
-        lore: "Популярный парень из Хокинса, выросший в более смелого человека. Он защищает тех, кто рядом."
-      },
-      {
-        name: "Юи Кимура",
-        origin: "Луп · агрессия",
-        tags: ["луп", "погоня", "выживание"],
-        desc: "Сильная в активных петлях и давлении на маньяка.",
-        lore: "Гонщица из Японии, привыкшая к скорости и риску. Она не любит ждать."
-      },
-      {
-        name: "Зарина Кассир",
-        origin: "Информация · поддержка",
-        tags: ["информация", "поддержка", "генераторы"],
-        desc: "Полезна в координации и раскрытии действий маньяка.",
-        lore: "Журналистка, расследовавшая преступления. Она верит, что правда важнее страха."
-      },
-      {
-        name: "Шерил Мейсон",
-        origin: "Анти-проклятие · поддержка",
-        tags: ["тотемы", "поддержка", "выживание"],
-        desc: "Хороша против тотемов и в поддержке команды.",
-        lore: "Дочь Гарри Мейсона, связанная с Сайлент Хиллом. Она знает, как выглядит настоящий кошмар."
-      },
-      {
-        name: "Феликс Рихтер",
-        origin: "Генераторы · информация",
-        tags: ["генераторы", "информация", "выживание"],
-        desc: "Практичный игрок для задач и чтения карты.",
-        lore: "Архитектор, чья семья связана с тайнами тумана. Он ищет ответы в чертежах и памяти."
-      },
-      {
-        name: "Элоди Ракото",
-        origin: "Стелс · информация",
-        tags: ["стелс", "информация", "тотемы"],
-        desc: "Осторожная выжившая, полезная в скрытых сценариях.",
-        lore: "Писательница, исследующая оккультное. Она привыкла доверять интуиции."
-      },
-      {
-        name: "Юн-Джин Ли",
-        origin: "Генераторы · давление",
-        tags: ["генераторы", "давление", "выживание"],
-        desc: "Любит быстро выполнять задачи и не тратить время.",
-        lore: "Продюсер, привыкшая к жёсткой конкуренции. Она не любит проигрывать."
-      },
-      {
-        name: "Джилл Валентайн",
-        origin: "Генераторы · выживание",
-        tags: ["генераторы", "выживание", "информация"],
-        desc: "Собранная выжившая для задач и сложных ситуаций.",
-        lore: "Бывшая сотрудница S.T.A.R.S., пережившая Raccoon City. Она сохраняет контроль в хаосе."
-      },
-      {
-        name: "Леон С. Кеннеди",
-        origin: "Поддержка · луп",
-        tags: ["поддержка", "луп", "выживание"],
-        desc: "Универсал для спасений и активных петель.",
-        lore: "Полицейский, ставший свидетелем биологического кошмара. Он не оставляет людей позади."
-      },
-      {
-        name: "Микаэла Рид",
-        origin: "Тотемы · поддержка",
-        tags: ["тотемы", "поддержка", "лечение"],
-        desc: "Играет вокруг тотемов и поддержки команды.",
-        lore: "Ведьма-самоучка, верящая в силу ритуалов. Она ищет свет даже в тумане."
-      },
-      {
-        name: "Джона Васкес",
-        origin: "Генераторы · информация",
-        tags: ["генераторы", "информация", "поддержка"],
-        desc: "Полезен в координации и быстром выполнении задач.",
-        lore: "Криптограф, привыкший искать закономерности. Он видит хаос как задачу."
-      },
-      {
-        name: "Йоичи Асакава",
-        origin: "Информация · тотемы",
-        tags: ["информация", "тотемы", "выживание"],
-        desc: "Чувствует опасность и помогает команде с проклятиями.",
-        lore: "Сын Рики, связанный с проклятием Садако. Он знает цену неверного шага."
-      },
-      {
-        name: "Хэдди Каур",
-        origin: "Информация · стелс",
-        tags: ["информация", "стелс", "выживание"],
-        desc: "Осторожная выжившая с уклоном в разведку.",
-        lore: "Исследовательница паранормального, которая столкнулась с тем, что нельзя объяснить."
-      },
-      {
-        name: "Ада Вонг",
-        origin: "Стелс · генераторы",
-        tags: ["стелс", "генераторы", "информация"],
-        desc: "Хладнокровная выжившая, любит скрытность и задачи.",
-        lore: "Агент, привыкшая работать в одиночку. Она всегда думает на несколько шагов вперёд."
-      },
-      {
-        name: "Ребекка Чемберс",
-        origin: "Лечение · поддержка",
-        tags: ["лечение", "поддержка", "информация"],
-        desc: "Сильный медик и командный игрок.",
-        lore: "Специалистка по медицине и выживанию. Она сохраняет спокойствие, когда другие паникуют."
-      },
-      {
-        name: "Витторио Тоскано",
-        origin: "Информация · проклятия",
-        tags: ["информация", "тотемы", "выживание"],
-        desc: "Полезен в игре против тотемов и скрытых механик.",
-        lore: "Итальянский учёный, искавший запретные знания. Туман стал его последним экспериментом."
-      },
-      {
-        name: "Талита Лира",
-        origin: "Поддержка · скорость",
-        tags: ["поддержка", "мобильность", "выживание"],
-        desc: "Командная выжившая для спасений и быстрых решений.",
-        lore: "Сестра Ренато, выросшая в Бразилии. Она верит в семью и взаимовыручку."
-      },
-      {
-        name: "Ренато Лира",
-        origin: "Луп · поддержка",
-        tags: ["луп", "поддержка", "выживание"],
-        desc: "Гибкий игрок для петель и помощи команде.",
-        lore: "Брат Талиты, привыкший защищать близких. Он не любит оставаться в стороне."
-      },
-      {
-        name: "Габриэль Сома",
-        origin: "Генераторы · мобильность",
-        tags: ["генераторы", "мобильность", "информация"],
-        desc: "Быстрый игрок для задач и смены позиции.",
-        lore: "Космический инженер, оказавшийся в тумане после катастрофы. Он ищет способ вернуться."
-      },
-      {
-        name: "Николас Кейдж",
-        origin: "Хаос · поддержка",
-        tags: ["поддержка", "выживание", "хаос"],
-        desc: "Нестандартная выжившая для смелых и шумных действий.",
-        lore: "Актёр, оказавшийся в кошмаре. Он реагирует на ужас с драматизмом и неожиданной стойкостью."
-      },
-      {
-        name: "Эллен Рипли",
-        origin: "Генераторы · выживание",
-        tags: ["генераторы", "выживание", "информация"],
-        desc: "Практичная выжившая для задач и выживания против давления.",
-        lore: "Офицер, пережившая встречу с Ксеноморфом. Она действует расчётливо и не теряет голову."
-      },
-      {
-        name: "Алан Уэйк",
-        origin: "Информация · стелс",
-        tags: ["информация", "стелс", "выживание"],
-        desc: "Любит читать обстановку и играть от скрытности.",
-        lore: "Писатель, столкнувшийся с тьмой в собственных историях. Он знает, что страх можно превратить в оружие."
-      },
-      {
-        name: "Сейбл Уорд",
-        origin: "Тотемы · стелс",
-        tags: ["тотемы", "стелс", "поддержка"],
-        desc: "Осторожная выжившая с уклоном в тотемы и скрытность.",
-        lore: "Девушка с тягой к оккультному, оказавшаяся в тумане. Она ищет силу в запретном."
-      },
-      {
-        name: "Эстри Язар",
-        origin: "Поддержка · магия",
-        tags: ["поддержка", "информация", "тотемы"],
-        desc: "Командная выжившая для поддержки и нестандартных решений.",
-        lore: "Бард из другого мира, привыкшая вдохновлять союзников. Её песни помогают не сдаваться."
-      },
-      {
-        name: "Лара Крофт",
-        origin: "Луп · генераторы",
-        tags: ["луп", "генераторы", "выживание"],
-        desc: "Универсальная выжившая для петель и задач.",
-        lore: "Исследовательница древностей, привыкшая к опасностям. Она не паникует перед неизвестным."
-      },
-      {
-        name: "Тревор Бельмонт",
-        origin: "Погоня · поддержка",
-        tags: ["погоня", "поддержка", "выживание"],
-        desc: "Активный игрок, полезный в погоне и спасениях.",
-        lore: "Охотник на вампиров из рода Бельмонтов. Он привык сражаться с тьмой лицом к лицу."
-      },
-      {
-        name: "Таури Кейн",
-        origin: "Контроль · поддержка",
-        tags: ["поддержка", "информация", "тотемы"],
-        desc: "Выжившая для контроля ситуации и поддержки команды.",
-        lore: "Лидер культа, чья вера столкнулась с туманом. Она ищет смысл в ритуалах и жертвах."
-      }
-    ];
+  const survivors = [
+    { name: "Дуайт Фэрфилд", origin: "Лидер", tags: ["Поддержка", "Информация"], desc: "Командный игрок, полезен в координации.", lore: "Скромный сотрудник, который в тумане стал лидером. Он учится брать ответственность и вести других." },
+    { name: "Мэг Томас", origin: "Спринт", tags: ["Луп", "Мобильность"], desc: "Быстрая выжившая, хорошо держит петли.", lore: "Легкоатлетка, стремившаяся к скорости. В тумане её упорство стало способом выжить." },
+    { name: "Клодетт Морэль", origin: "Лечение", tags: ["Лечение", "Стелс"], desc: "Сильный медик и соло-выжившая.", lore: "Ботаник-интроверт, нашедшая в растениях смысл. Она помогает другим, оставаясь незаметной." },
+    { name: "Джейк Парк", origin: "Стелс", tags: ["Стелс", "Генераторы"], desc: "Тихий игрок, хорошо работает с генераторами.", lore: "Сын богатой семьи, сбежавший в природу. Он не доверяет людям, но умеет выживать." },
+    { name: "Ниа Карлссон", origin: "Луп", tags: ["Луп", "Стелс"], desc: "Гибкая выжившая для агрессивных петель.", lore: "Бунтарка из Швеции, привыкшая полагаться на скорость и импровизацию." },
+    { name: "Лори Строуд", origin: "Endgame", tags: ["Endgame", "Луп"], desc: "Хороша в затягивании матча и игре против преследования.", lore: "Выжившая после нападения Майкла Майерса. Её жизнь стала борьбой с необъяснимым злом." },
+    { name: "Билл Овербек", origin: "Поддержка", tags: ["Поддержка", "Анти-туннель"], desc: "Ветеран, который помогает союзникам и не боится рисковать.", lore: "Старый солдат, привыкший к потерям. Он сражается не ради славы, а ради других." },
+    { name: "Дэвид Кинг", origin: "Луп", tags: ["Луп", "Погоня"], desc: "Любит активные петли и давление на маньяка.", lore: "Уличный боец и спортсмен, который не отступает. Его упрямство помогает ему в тумане." },
+    { name: "Квентин Смит", origin: "Генераторы", tags: ["Генераторы", "Поддержка"], desc: "Практичный игрок, ориентированный на задачи.", lore: "Парень, боровшийся с кошмаром Фредди. Он знает, что страх можно пережить." },
+    { name: "Дэвид Тапп", origin: "Информация", tags: ["Информация", "Погоня"], desc: "Полезен в чтении карты и давлении на маньяка.", lore: "Полицейский, расследовавший дело Пилы. Он привык видеть ложь и искать правду." },
+    { name: "Кейт Денсон", origin: "Луп", tags: ["Луп", "Поддержка"], desc: "Универсальная выжившая для петель.", lore: "Певица, мечтавшая о сцене. В тумане она сохраняет тепло и веру в людей." },
+    { name: "Адам Фрэнсис", origin: "Генераторы", tags: ["Генераторы", "Поддержка"], desc: "Сбалансированный персонаж для задач и спасений.", lore: "Учитель и писатель, оказавшийся в центре трагедии. Он ищет смысл даже в кошмаре." },
+    { name: "Джефф Йохансен", origin: "Поддержка", tags: ["Поддержка", "Стелс"], desc: "Тихий союзник, полезный в осторожных матчах.", lore: "Музыкант и художник, который предпочитает помогать другим, оставаясь в тени." },
+    { name: "Джейн Ромеро", origin: "Выживание", tags: ["Выживание", "Поддержка"], desc: "Уверенная выжившая для командной игры.", lore: "Телеведущая, привыкшая быть на виду. В тумане она учится бороться за себя и других." },
+    { name: "Эш Уильямс", origin: "Анти-туннель", tags: ["Анти-туннель", "Хаос"], desc: "Не боится быть целью и любит нестандартные ситуации.", lore: "Продавец из S-Mart, ставший невольным героем. Он спасает мир с неловким юмором." },
+    { name: "Нэнси Уилер", origin: "Информация", tags: ["Информация", "Стелс"], desc: "Осторожная выжившая, хорошо читает обстановку.", lore: "Подруга Майка и свидетель странных событий в Хокинсе. Она не сдаётся даже перед неизвестным." },
+    { name: "Стив Харрингтон", origin: "Луп", tags: ["Луп", "Поддержка"], desc: "Универсал для петель и помощи союзникам.", lore: "Популярный парень из Хокинса, выросший в более смелого человека. Он защищает тех, кто рядом." },
+    { name: "Юи Кимура", origin: "Луп", tags: ["Луп", "Погоня"], desc: "Сильная в активных петлях и давлении на маньяка.", lore: "Гонщица из Японии, привыкшая к скорости и риску. Она не любит ждать." },
+    { name: "Зарина Кассир", origin: "Информация", tags: ["Информация", "Поддержка"], desc: "Полезна в координации и раскрытии действий маньяка.", lore: "Журналистка, расследовавшая преступления. Она верит, что правда важнее страха." },
+    { name: "Шерил Мейсон", origin: "Анти-проклятие", tags: ["Тотемы", "Поддержка"], desc: "Хороша против тотемов и в поддержке команды.", lore: "Дочь Гарри Мейсона, связанная с Сайлент Хиллом. Она знает, как выглядит настоящий кошмар." },
+    { name: "Феликс Рихтер", origin: "Генераторы", tags: ["Генераторы", "Информация"], desc: "Практичный игрок для задач и чтения карты.", lore: "Архитектор, чья семья связана с тайнами тумана. Он ищет ответы в чертежах и памяти." },
+    { name: "Элоди Ракото", origin: "Стелс", tags: ["Стелс", "Информация"], desc: "Осторожная выжившая, полезная в скрытых сценариях.", lore: "Писательница, исследующая оккультное. Она привыкла доверять интуиции." },
+    { name: "Юн-Джин Ли", origin: "Генераторы", tags: ["Генераторы", "Давление"], desc: "Любит быстро выполнять задачи и не тратить время.", lore: "Продюсер, привыкшая к жёсткой конкуренции. Она не любит проигрывать." },
+    { name: "Джилл Валентайн", origin: "Генераторы", tags: ["Генераторы", "Выживание"], desc: "Собранная выжившая для задач и сложных ситуаций.", lore: "Бывшая сотрудница S.T.A.R.S., пережившая Raccoon City. Она сохраняет контроль в хаосе." },
+    { name: "Леон С. Кеннеди", origin: "Поддержка", tags: ["Поддержка", "Луп"], desc: "Универсал для спасений и активных петель.", lore: "Полицейский, ставший свидетелем биологического кошмара. Он не оставляет людей позади." },
+    { name: "Микаэла Рид", origin: "Тотемы", tags: ["Тотемы", "Поддержка"], desc: "Играет вокруг тотемов и поддержки команды.", lore: "Ведьма-самоучка, верящая в силу ритуалов. Она ищет свет даже в тумане." },
+    { name: "Джона Васкес", origin: "Генераторы", tags: ["Генераторы", "Информация"], desc: "Полезен в координации и быстром выполнении задач.", lore: "Криптограф, привыкший искать закономерности. Он видит хаос как задачу." },
+    { name: "Йоичи Асакава", origin: "Информация", tags: ["Информация", "Тотемы"], desc: "Чувствует опасность и помогает команде с проклятиями.", lore: "Сын Рики, связанный с проклятием Садако. Он знает цену неверного шага." },
+    { name: "Хэдди Каур", origin: "Информация", tags: ["Информация", "Стелс"], desc: "Осторожная выжившая с уклоном в разведку.", lore: "Исследовательница паранормального, которая столкнулась с тем, что нельзя объяснить." },
+    { name: "Ада Вонг", origin: "Стелс", tags: ["Стелс", "Генераторы"], desc: "Хладнокровная выжившая, любит скрытность и задачи.", lore: "Агент, привыкшая работать в одиночку. Она всегда думает на несколько шагов вперёд." },
+    { name: "Ребекка Чемберс", origin: "Лечение", tags: ["Лечение", "Поддержка"], desc: "Сильный медик и командный игрок.", lore: "Специалистка по медицине и выживанию. Она сохраняет спокойствие, когда другие паникуют." },
+    { name: "Витторио Тоскано", origin: "Информация", tags: ["Информация", "Тотемы"], desc: "Полезен в игре против тотемов и скрытых механик.", lore: "Итальянский учёный, искавший запретные знания. Туман стал его последним экспериментом
+        { name: "Талита Лира", origin: "Поддержка", tags: ["Поддержка", "Мобильность"], desc: "Командная выжившая для спасений и быстрых решений.", lore: "Сестра Ренато, выросшая в Бразилии. Она верит в семью и взаимовыручку." },
+  { name: "Ренато Лира", origin: "Луп", tags: ["Луп", "Поддержка"], desc: "Гибкий игрок для петель и помощи команде.", lore: "Брат Талиты, привыкший защищать близких. Он не любит оставаться в стороне." },
+  { name: "Габриэль Сома", origin: "Генераторы", tags: ["Генераторы", "Мобильность"], desc: "Быстрый игрок для задач и смены позиции.", lore: "Космический инженер, оказавшийся в тумане после катастрофы. Он ищет способ вернуться." },
+  { name: "Николас Кейдж", origin: "Хаос", tags: ["Поддержка", "Выживание"], desc: "Нестандартная выжившая для смелых и шумных действий.", lore: "Актёр, оказавшийся в кошмаре. Он реагирует на ужас с драматизмом и неожиданной стойкостью." },
+  { name: "Эллен Рипли", origin: "Генераторы", tags: ["Генераторы", "Выживание"], desc: "Практичная выжившая для задач и выживания против давления.", lore: "Офицер, пережившая встречу с Ксеноморфом. Она действует расчётливо и не теряет голову." },
+  { name: "Алан Уэйк", origin: "Информация", tags: ["Информация", "Стелс"], desc: "Любит читать обстановку и играть от скрытности.", lore: "Писатель, столкнувшийся с тьмой в собственных историях. Он знает, что страх можно превратить в оружие." },
+  { name: "Сейбл Уорд", origin: "Тотемы", tags: ["Тотемы", "Стелс"], desc: "Осторожная выжившая с уклоном в тотемы и скрытность.", lore: "Девушка с тягой к оккультному, оказавшаяся в тумане. Она ищет силу в запретном." },
+  { name: "Эстри Язар", origin: "Поддержка", tags: ["Поддержка", "Информация"], desc: "Командная выжившая для поддержки и нестандартных решений.", lore: "Бард из другого мира, привыкшая вдохновлять союзников. Её песни помогают не сдаваться." },
+  { name: "Лара Крофт", origin: "Луп", tags: ["Луп", "Генераторы"], desc: "Универсальная выжившая для петель и задач.", lore: "Исследовательница древностей, привыкшая к опасностям. Она не паникует перед неизвестным." },
+  { name: "Тревор Бельмонт", origin: "Погоня", tags: ["Погоня", "Поддержка"], desc: "Активный игрок, полезный в погоне и спасениях.", lore: "Охотник на вампиров из рода Бельмонтов. Он привык сражаться с тьмой лицом к лицу." },
+  { name: "Таури Кейн", origin: "Контроль", tags: ["Поддержка", "Информация"], desc: "Выжившая для контроля ситуации и поддержки команды.", lore: "Лидер культа, чья вера столкнулась с туманом. Она ищет смысл в ритуалах и жертвах." }
+];
 
-    const survivorPerks = [
-      { name: "Dead Hard", tags: ["луп", "выживание"], desc: "Даёт короткий рывок после ранения; сильный перк для активных петель." },
-      { name: "Sprint Burst", tags: ["луп", "мобильность"], desc: "Ускорение после начала бега; помогает разорвать дистанцию." },
-      { name: "Lithe", tags: ["луп", "мобильность"], desc: "Ускорение после быстрого прыжка через окно или укрытие." },
-      { name: "Balanced Landing", tags: ["луп", "мобильность"], desc: "Ускорение и снижение усталости после падения с высоты." },
-      { name: "Windows of Opportunity", tags: ["информация", "луп"], desc: "Показывает окна и доски; помогает строить маршрут в петле." },
-      { name: "Resilience", tags: ["генераторы", "выживание"], desc: "Ускоряет действия, пока вы ранены; хорош для агрессивных задач." },
-      { name: "Spine Chill", tags: ["информация", "стелс"], desc: "Предупреждает, когда маньяк смотрит в вашу сторону." },
-      { name: "Premonition", tags: ["информация", "стелс"], desc: "Даёт сигнал, когда маньяк рядом; полезно для осторожной игры." },
-      { name: "Kindred", tags: ["информация", "поддержка"], desc: "Раскрывает маньяка и союзников при повешении; помогает решать, идти ли на спасение." },
-      { name: "Bond", tags: ["информация", "поддержка"], desc: "Показывает союзников рядом; помогает не мешать и координироваться." },
-      { name: "Empathy", tags: ["информация", "поддержка"], desc: "Показывает раненых союзников; удобно для медика и спасений." },
-      { name: "We'll Make It", tags: ["лечение", "поддержка"], desc: "Быстро лечит после снятия с крюка; сильный командный перк." },
-      { name: "Botany Knowledge", tags: ["лечение", "поддержка"], desc: "Ускоряет лечение и повышает эффективность аптечек." },
-      { name: "Self-Care", tags: ["лечение", "соло"], desc: "Позволяет лечиться без аптечки; удобно для соло, но тратит время." },
-      { name: "Circle of Healing", tags: ["лечение", "тотемы", "поддержка"], desc: "Создаёт зону лечения для команды; зависит от тотема." },
-      { name: "Borrowed Time", tags: ["поддержка", "анти-туннель"], desc: "Защищает снятого с крюка союзника от немедленной атаки." },
-      { name: "Deliverance", tags: ["поддержка", "анти-туннель"], desc: "Даёт шанс освободиться с крюка, но требует спасения союзника." },
-      { name: "Decisive Strike", tags: ["анти-туннель", "выживание"], desc: "Наказывает маньяка за туннель после снятия с крюка." },
-      { name: "Off the Record", tags: ["анти-туннель", "выживание"], desc: "Скрывает звуки и даёт защиту после снятия с крюка." },
-      { name: "Unbreakable", tags: ["выживание", "соло"], desc: "Позволяет подняться с земли один раз; страховка от slugging." },
-      { name: "Tenacity", tags: ["выживание", "соло"], desc: "Позволяет быстрее ползти и восстанавливаться на земле." },
-      { name: "Flip-Flop", tags: ["выживание", "анти-туннель"], desc: "Превращает время на земле в прогресс освобождения." },
-      { name: "Saboteur", tags: ["поддержка", "давление"], desc: "Позволяет ломать крюки и мешать маньяку." },
-      { name: "Breakdown", tags: ["поддержка", "анти-туннель"], desc: "Ломает крюк после спасения и раскрывает маньяка." },
-      { name: "Prove Thyself", tags: ["генераторы", "поддержка"], desc: "Ускоряет ремонт при совместной работе." },
-      { name: "Leader", tags: ["поддержка", "генераторы"], desc: "Помогает союзникам быстрее выполнять действия рядом." },
-      { name: "Better Together", tags: ["информация", "генераторы"], desc: "Раскрывает генератор и союзников при ремонте." },
-      { name: "Dark Sense", tags: ["информация", "генераторы"], desc: "Показывает маньяка после завершения генератора." },
-      { name: "Deja Vu", tags: ["генераторы", "информация"], desc: "Показывает генераторы и ускоряет ремонт сцепленных генераторов." },
-      { name: "Visionary", tags: ["генераторы", "информация"], desc: "Показывает генераторы в радиусе; помогает планировать задачи." },
-      { name: "Fixated", tags: ["стелс", "луп"], desc: "Ускоряет ходьбу и помогает читать маршруты." },
-      { name: "Urban Evasion", tags: ["стелс", "выживание"], desc: "Ускоряет передвижение при crouch; удобно для скрытной игры." },
-      { name: "Iron Will", tags: ["стелс", "выживание"], desc: "Снижает стоны при ранении; помогает скрыться." },
-      { name: "Calm Spirit", tags: ["стелс", "выживание"], desc: "Подавляет некоторые звуки и защищает от эффектов страха." },
-      { name: "Distortion", tags: ["стелс", "информация"], desc: "Скрывает ауру и расходует заряды; сильный анти-информационный перк." },
-      { name: "Lucky Break", tags: ["стелс", "лечение"], desc: "Даёт время скрыться после ранения и помогает уйти." },
-      { name: "Boil Over", tags: ["луп", "давление"], desc: "Усложняет маньяку несение к крюку." },
-      { name: "Any Means Necessary", tags: ["луп", "поддержка"], desc: "Позволяет поднимать доски; помогает команде в петлях." },
-      { name: "Smash Hit", tags: ["луп", "мобильность"], desc: "Даёт ускорение после оглушения маньяка доской." },
-      { name: "Background Player", tags: ["поддержка", "мобильность"], desc: "Даёт скорость при спасении на глазах у маньяка." },
-      { name: "Reassurance", tags: ["поддержка", "анти-кемп"], desc: "Помогает союзнику на крюке и снижает давление кемпа." },
-      { name: "Guardian", tags: ["поддержка", "информация"], desc: "Раскрывает маньяка после спасения и помогает уйти." }
-    ];
+const survivorPerks = [
+  { name: "Dead Hard", tags: ["Луп", "Выживание"], desc: "Даёт короткий рывок после ранения; сильный перк для активных петель." },
+  { name: "Sprint Burst", tags: ["Луп", "Мобильность"], desc: "Ускорение после начала бега; помогает разорвать дистанцию." },
+  { name: "Lithe", tags: ["Луп", "Мобильность"], desc: "Ускорение после быстрого прыжка через окно или укрытие." },
+  { name: "Balanced Landing", tags: ["Луп", "Мобильность"], desc: "Ускорение и снижение усталости после падения с высоты." },
+  { name: "Windows of Opportunity", tags: ["Информация", "Луп"], desc: "Показывает окна и доски; помогает строить маршрут в петле." },
+  { name: "Resilience", tags: ["Генераторы", "Выживание"], desc: "Ускоряет действия, пока вы ранены; хорош для агрессивных задач." },
+  { name: "Spine Chill", tags: ["Информация", "Стелс"], desc: "Предупреждает, когда маньяк смотрит в вашу сторону." },
+  { name: "Premonition", tags: ["Информация", "Стелс"], desc: "Даёт сигнал, когда маньяк рядом; полезно для осторожной игры." },
+  { name: "Kindred", tags: ["Информация", "Поддержка"], desc: "Раскрывает маньяка и союзников при повешении; помогает решать, идти ли на спасение." },
+  { name: "Bond", tags: ["Информация", "Поддержка"], desc: "Показывает союзников рядом; помогает не мешать и координироваться." },
+  { name: "Empathy", tags: ["Информация", "Поддержка"], desc: "Показывает раненых союзников; удобно для медика и спасений." },
+  { name: "We'll Make It", tags: ["Лечение", "Поддержка"], desc: "Быстро лечит после снятия с крюка; сильный командный перк." },
+  { name: "Botany Knowledge", tags: ["Лечение", "Поддержка"], desc: "Ускоряет лечение и повышает эффективность аптечек." },
+  { name: "Self-Care", tags: ["Лечение", "Соло"], desc: "Позволяет лечиться без аптечки; удобно для соло, но тратит время." },
+  { name: "Circle of Healing", tags: ["Лечение", "Тотемы"], desc: "Создаёт зону лечения для команды; зависит от тотема." },
+  { name: "Borrowed Time", tags: ["Поддержка", "Анти-туннель"], desc: "Защищает снятого с крюка союзника от немедленной атаки." },
+  { name: "Deliverance", tags: ["Поддержка", "Анти-туннель"], desc: "Даёт шанс освободиться с крюка, но требует спасения союзника." },
+  { name: "Decisive Strike", tags: ["Анти-туннель", "Выживание"], desc: "Наказывает маньяка за туннель после снятия с крюка." },
+  { name: "Off the Record", tags: ["Анти-туннель", "Выживание"], desc: "Скрывает звуки и даёт защиту после снятия с крюка." },
+  { name: "Unbreakable", tags: ["Выживание", "Соло"], desc: "Позволяет подняться с земли один раз; страховка от slugging." },
+  { name: "Tenacity", tags: ["Выживание", "Соло"], desc: "Позволяет быстрее ползти и восстанавливаться на земле." },
+  { name: "Flip-Flop", tags: ["Выживание", "Анти-туннель"], desc: "Превращает время на земле в прогресс освобождения." },
+  { name: "Saboteur", tags: ["Поддержка", "Давление"], desc: "Позволяет ломать крюки и мешать маньяку." },
+  { name: "Breakdown", tags: ["Поддержка", "Анти-туннель"], desc: "Ломает крюк после спасения и раскрывает маньяка." },
+  { name: "Prove Thyself", tags: ["Генераторы", "Поддержка"], desc: "Ускоряет ремонт при совместной работе." },
+  { name: "Leader", tags: ["Поддержка", "Генераторы"], desc: "Помогает союзникам быстрее выполнять действия рядом." },
+  { name: "Better Together", tags: ["Информация", "Генераторы"], desc: "Раскрывает генератор и союзников при ремонте." },
+  { name: "Dark Sense", tags: ["Информация", "Генераторы"], desc: "Показывает маньяка после завершения генератора." },
+  { name: "Deja Vu", tags: ["Генераторы", "Информация"], desc: "Показывает генераторы и ускоряет ремонт сцепленных генераторов." },
+  { name: "Visionary", tags: ["Генераторы", "Информация"], desc: "Показывает генераторы в радиусе; помогает планировать задачи." },
+  { name: "Fixated", tags: ["Стелс", "Луп"], desc: "Ускоряет ходьбу и помогает читать маршруты." },
+  { name: "Urban Evasion", tags: ["Стелс", "Выживание"], desc: "Ускоряет передвижение при crouch; удобно для скрытной игры." },
+  { name: "Iron Will", tags: ["Стелс", "Выживание"], desc: "Снижает стоны при ранении; помогает скрыться." },
+  { name: "Calm Spirit", tags: ["Стелс", "Выживание"], desc: "Подавляет некоторые звуки и защищает от эффектов страха." },
+  { name: "Distortion", tags: ["Стелс", "Информация"], desc: "Скрывает ауру и расходует заряды; сильный анти-информационный перк." },
+  { name: "Lucky Break", tags: ["Стелс", "Лечение"], desc: "Даёт время скрыться после ранения и помогает уйти." },
+  { name: "Boil Over", tags: ["Луп", "Давление"], desc: "Усложняет маньяку несение к крюку." },
+  { name: "Any Means Necessary", tags: ["Луп", "Поддержка"], desc: "Позволяет поднимать доски; помогает команде в петлях." },
+  { name: "Smash Hit", tags: ["Луп", "Мобильность"], desc: "Даёт ускорение после оглушения маньяка доской." },
+  { name: "Background Player", tags: ["Поддержка", "Мобильность"], desc: "Даёт скорость при спасении на глазах у маньяка." },
+  { name: "Reassurance", tags: ["Поддержка", "Анти-кемп"], desc: "Помогает союзнику на крюке и снижает давление кемпа." },
+  { name: "Guardian", tags: ["Поддержка", "Информация"], desc: "Раскрывает маньяка после спасения и помогает уйти." }
+];
 
-    const killerPerks = [
-      { name: "Barbecue & Chilli", tags: ["информация", "давление"], desc: "Раскрывает далёких выживших после повешения; классический перк давления." },
-      { name: "Hex: Ruin", tags: ["контроль генераторов", "давление"], desc: "Замедляет генераторы, пока тотем активен." },
-      { name: "Pop Goes the Weasel", tags: ["контроль генераторов", "давление"], desc: "После повешения позволяет сильно повредить генератор." },
-      { name: "Corrupt Intervention", tags: ["контроль генераторов", "раннее давление"], desc: "Блокирует дальние генераторы в начале матча." },
-      { name: "Deadlock", tags: ["контроль генераторов", "давление"], desc: "Блокирует самый прогрессивный генератор после завершения другого." },
-      { name: "Scourge Hook: Pain Resonance", tags: ["контроль генераторов", "давление"], desc: "Наказывает генераторы через особые крюки." },
-      { name: "Jolt", tags: ["контроль генераторов", "погоня"], desc: "Повреждает генераторы при оглушении выжившего." },
-      { name: "Discordance", tags: ["информация", "давление"], desc: "Показывает генераторы, где работают несколько выживших." },
-      { name: "Tinkerer", tags: ["информация", "мобильность"], desc: "Предупреждает о почти завершённом генераторе." },
-      { name: "Enduring", tags: ["погоня", "анти-луп"], desc: "Сокращает оглушение от досок." },
-      { name: "Spirit Fury", tags: ["погоня", "анти-луп"], desc: "Ломает доску после нескольких оглушений." },
-      { name: "Brutal Strength", tags: ["погоня", "анти-луп"], desc: "Ускоряет ломание досок и генераторов." },
-      { name: "Bamboozle", tags: ["погоня", "анти-луп"], desc: "Блокирует окно после быстрого прыжка." },
-      { name: "Superior Anatomy", tags: ["погоня", "анти-луп"], desc: "Ускоряет прыжок через окно после использования способности." },
-      { name: "Save the Best for Last", tags: ["погоня", "давление"], desc: "Ускоряет атаку после ударов по не-обсессии." },
-      { name: "Play with Your Food", tags: ["погоня", "мобильность"], desc: "Даёт скорость после отказа от атаки по обсессии." },
-      { name: "Lethal Pursuer", tags: ["информация", "раннее давление"], desc: "Показывает выживших в начале матча." },
-      { name: "Nowhere to Hide", tags: ["информация", "давление"], desc: "Раскрывает выживших рядом с повреждённым генератором." },
-      { name: "Darkness Revealed", tags: ["информация"], desc: "Раскрывает выживших рядом со шкафами." },
-      { name: "Whispers", tags: ["информация"], desc: "Подсказывает, есть ли выживший рядом." },
-      { name: "Spies from the Shadows", tags: ["информация"], desc: "Предупреждает о воронах, потревоженных выжившими." },
-      { name: "A Nurse's Calling", tags: ["информация", "лечение"], desc: "Показывает лечащихся выживших в радиусе." },
-      { name: "Sloppy Butcher", tags: ["давление", "лечение"], desc: "Усиливает кровотечение и замедляет лечение." },
-      { name: "Thanatophobia", tags: ["давление", "контроль генераторов"], desc: "Замедляет действия при раненых или повешенных выживших." },
-      { name: "Dying Light", tags: ["давление", "endgame"], desc: "Даёт бонусы против обсессии и замедляет остальных." },
-      { name: "Gift of Pain", tags: ["давление", "лечение"], desc: "Усложняет лечение и ремонт после снятия с крюка." },
-      { name: "Hex: Plaything", tags: ["стелс", "контроль"], desc: "Скрывает тотем и накладывает проклятие после повешения." },
-      { name: "Hex: Pentimento", tags: ["контроль", "тотемы"], desc: "Позволяет восстанавливать тотемы и усиливать замедление." },
-      { name: "Hex: Devour Hope", tags: ["endgame", "давление"], desc: "Даёт силу по мере снятия с крюка; опасный endgame-перк." },
-      { name: "Hex: No One Escapes Death", tags: ["endgame", "давление"], desc: "Усиливает маньяка после завершения всех генераторов." },
-      { name: "Blood Warden", tags: ["endgame", "контроль"], desc: "Блокирует выход после повешения в endgame." },
-      { name: "Remember Me", tags: ["endgame", "давление"], desc: "Увеличивает время открытия ворот." },
-      { name: "Rancor", tags: ["endgame", "информация"], desc: "Раскрывает обсессию и даёт добивание в endgame." },
-      { name: "Fire Up", tags: ["endgame", "мобильность"], desc: "Ускоряет действия по мере завершения генераторов." },
-      { name: "Nemesis", tags: ["информация", "погоня"], desc: "Раскрывает обсессию после оглушения." },
-      { name: "Monitor & Abuse", tags: ["стелс", "информация"], desc: "Меняет радиус террора и помогает подкрадываться." },
-      { name: "Furtive Chase", tags: ["стелс", "погоня"], desc: "Меняет обсессию и помогает скрытно преследовать." },
-      { name: "Trail of Torment", tags: ["стелс", "информация"], desc: "Скрывает террор после повреждения генератора." },
-      { name: "Dark Devotion", tags: ["стелс", "информация"], desc: "Переносит террор на обсессию после удара." },
-      { name: "Floods of Rage", tags: ["информация"], desc: "Раскрывает выживших после снятия с особого крюка." },
-      { name: "Thrilling Tremors", tags: ["информация", "контроль генераторов"], desc: "Блокирует генераторы и раскрывает выживших после повешения." }
-    ];
+const killerPerks = [
+  { name: "Barbecue & Chilli", tags: ["Информация", "Давление"], desc: "Раскрывает далёких выживших после повешения; классический перк давления." },
+  { name: "Hex: Ruin", tags: ["Контроль генераторов", "Давление"], desc: "Замедляет генераторы, пока тотем активен." },
+  { name: "Pop Goes the Weasel", tags: ["Контроль генераторов", "Давление"], desc: "После повешения позволяет сильно повредить генератор." },
+  { name: "Corrupt Intervention", tags: ["Контроль генераторов", "Раннее давление"], desc: "Блокирует дальние генераторы в начале матча." },
+  { name: "Deadlock", tags: ["Контроль генераторов", "Давление"], desc: "Блокирует самый прогрессивный генератор после завершения другого." },
+  { name: "Scourge Hook: Pain Resonance", tags: ["Контроль генераторов", "Давление"], desc: "Наказывает генераторы через особые крюки." },
+  { name: "Jolt", tags: ["Контроль генераторов", "Погоня"], desc: "Повреждает генераторы при оглушении выжившего." },
+  { name: "Discordance", tags: ["Информация", "Давление"], desc: "Показывает генераторы, где работают несколько выживших." },
+  { name: "Tinkerer", tags: ["Информация", "Мобильность"], desc: "Предупреждает о почти завершённом генераторе." },
+  { name: "Enduring", tags: ["Погоня", "Анти-луп"], desc: "Сокращает оглушение от досок." },
+  { name: "Spirit Fury", tags: ["Погоня", "Анти-луп"], desc: "Ломает доску после нескольких оглушений." },
+  { name: "Brutal Strength", tags: ["Погоня", "Анти-луп"], desc: "Ускоряет ломание досок и генераторов." },
+  { name: "Bamboozle", tags: ["Погоня", "Анти-луп"], desc: "Блокирует окно после быстрого прыжка." },
+  { name: "Superior Anatomy", tags: ["Погоня", "Анти-луп"], desc: "Ускоряет прыжок через окно после использования способности." },
+  { name: "Save the Best for Last", tags: ["Погоня", "Давление"], desc: "Ускоряет атаку после ударов по не-обсессии." },
+  { name: "Play with Your Food", tags: ["Погоня", "Мобильность"], desc: "Даёт скорость после отказа от атаки по обсессии." },
+  { name: "Lethal Pursuer", tags: ["Информация", "Раннее давление"], desc: "Показывает выживших в начале матча." },
+  { name: "Nowhere to Hide", tags: ["Информация", "Давление"], desc: "Раскрывает выживших рядом с повреждённым генератором." },
+  { name: "Darkness Revealed", tags: ["Информация"], desc: "Раскрывает выживших рядом со шкафами." },
+  { name: "Whispers", tags: ["Информация"], desc: "Подсказывает, есть ли выживший рядом." },
+  { name: "Spies from the Shadows", tags: ["Информация"], desc: "Предупреждает о воронах, потревоженных выжившими." },
+  { name: "A Nurse's Calling", tags: ["Информация", "Лечение"], desc: "Показывает лечащихся выживших в радиусе." },
+  { name: "Sloppy Butcher", tags: ["Давление", "Лечение"], desc: "Усиливает кровотечение и замедляет лечение." },
+  { name: "Thanatophobia", tags: ["Давление", "Контроль генераторов"], desc: "Замедляет действия при раненых или повешенных выживших." },
+  { name: "Dying Light", tags: ["Давление", "Endgame"], desc: "Даёт бонусы против обсессии и замедляет остальных." },
+  { name: "Gift of Pain", tags: ["Давление", "Лечение"], desc: "Усложняет лечение и ремонт после снятия с крюка." },
+  { name: "Hex: Plaything", tags: ["Стелс", "Контроль"], desc: "Скрывает тотем и накладывает проклятие после повешения." },
+  { name: "Hex: Pentimento", tags: ["Контроль", "Тотемы"], desc: "Позволяет восстанавливать тотемы и усиливать замедление." },
+  { name: "Hex: Devour Hope", tags: ["Endgame", "Давление"], desc: "Даёт силу по мере снятия с крюка; опасный endgame-перк." },
+  { name: "Hex: No One Escapes Death", tags: ["Endgame", "Давление"], desc: "Усиливает маньяка после завершения всех генераторов." },
+  { name: "Blood Warden", tags: ["Endgame", "Контроль"], desc: "Блокирует выход после повешения в endgame." },
+  { name: "Remember Me", tags: ["Endgame", "Давление"], desc: "Увеличивает время открытия ворот." },
+  { name: "Rancor", tags: ["Endgame", "Информация"], desc: "Раскрывает обсессию и даёт добивание в endgame." },
+  { name: "Fire Up", tags: ["Endgame", "Мобильность"], desc: "Ускоряет действия по мере завершения генераторов." },
+  { name: "Nemesis", tags: ["Информация", "Погоня"], desc: "Раскрывает обсессию после оглушения." },
+  { name: "Monitor & Abuse", tags: ["Стелс", "Информация"], desc: "Меняет радиус террора и помогает подкрадываться." },
+  { name: "Furtive Chase", tags: ["Стелс", "Погоня"], desc: "Меняет обсессию и помогает скрытно преследовать." },
+  { name: "Trail of Torment", tags: ["Стелс", "Информация"], desc: "Скрывает террор после повреждения генератора." },
+  { name: "Dark Devotion", tags: ["Стелс", "Информация"], desc: "Переносит террор на обсессию после удара." },
+  { name: "Floods of Rage", tags: ["Информация"], desc: "Раскрывает выживших после снятия с особого крюка." },
+  { name: "Thrilling Tremors", tags: ["Информация", "Контроль генераторов"], desc: "Блокирует генераторы и раскрывает выживших после повешения." }
+];
 
-    const STYLES = {
-      survivor: ["генераторы", "лечение", "поддержка", "стелс", "луп", "информация", "анти-туннель", "выживание", "тотемы", "соло", "endgame"],
-      killer: ["давление", "стелс", "погоня", "контроль генераторов", "анти-луп", "мобильность", "информация", "endgame"]
-    };
+const STYLES = {
+  survivor: ["Генераторы", "Лечение", "Поддержка", "Стелс", "Луп", "Информация", "Анти-туннель", "Выживание", "Тотемы", "Соло", "Endgame"],
+  killer: ["Давление", "Стелс", "Погоня", "Контроль генераторов", "Анти-луп", "Мобильность", "Информация", "Endgame"]
+};
 
-    const SYNONYMS = {
-      "генераторы": ["ген", "гены", "генератор", "ремонт", "задачи", "скорость генераторов", "чинить", "починка"],
-      "лечение": ["леч", "лечить", "лечение", "медик", "аптечка", "ранен", "хил", "самолечение"],
-      "поддержка": ["поддерж", "спас", "спасать", "команда", "союзник", "помогать", "альтруизм", "снять с крюка"],
-      "стелс": ["стелс", "скрыт", "тихо", "незамет", "прятаться", "кусты", "скрытность"],
-      "луп": ["луп", "петл", "погоня", "доск", "окно", "уходить", "тянуть", "крутить"],
-      "информация": ["инфо", "информация", "аура", "видеть", "разведка", "читать", "подсказ", "координ"],
-      "анти-туннель": ["туннел", "анти-туннель", "кемп", "снимать", "защит", "не дать убить", "обсессия"],
-      "выживание": ["выжив", "выжить", "страховка", "соло", "подняться", "ползти", "жизнь"],
-      "тотемы": ["тотем", "проклят", "hex", "ритуал", "магия"],
-      "соло": ["соло", "один", "без команды", "сам", "самостоятельн"],
-      "endgame": ["endgame", "конец", "ворота", "финал", "последний генератор", "эндгейм"],
-      "давление": ["давление", "давить", "агрессив", "быстро", "прессинг", "не давать"],
-      "погоня": ["погон", "преслед", "догон", "атака", "удар", "гнать"],
-      "контроль генераторов": ["генератор", "гены", "ген", "замедл", "регресс", "контроль", "блокир"],
-      "анти-луп": ["анти-луп", "луп", "доск", "окно", "ломать", "петл", "контроль петель"],
-      "мобильность": ["мобиль", "скорост", "быстро", "рывок", "перемещ", "телепорт", "карта"],
-      "раннее давление": ["начало", "старт", "ранн", "первый", "раннее"],
-      "контроль": ["контроль", "зона", "удерж", "блокир", "не пускать"],
-      "зонирование": ["зон", "территор", "участок", "контроль зоны"],
-      "контроль зоны": ["зон", "территор", "участок", "контроль зоны"],
-      "метательные": ["метат", "топор", "нож", "снаряд", "дистанц"],
-      "магия": ["магия", "магич", "заклин", "спелл"],
-      "хаос": ["хаос", "шум", "смел", "нестандарт", "рандом"],
-      "карта": ["карта", "порталы", "позиц", "локац"]
-    };
+const SYNONYMS = {
+  "Генераторы": ["ген", "гены", "генератор", "ремонт", "задачи", "скорость генераторов", "чинить", "починка"],
+  "Лечение": ["леч", "лечить", "лечение", "медик", "аптечка", "ранен", "хил", "самолечение"],
+  "Поддержка": ["поддерж", "спас", "спасать", "команда", "союзник", "помогать", "альтруизм", "снять с крюка"],
+  "Стелс": ["стелс", "скрыт", "тихо", "незамет", "прятаться", "кусты", "скрытность"],
+  "Луп": ["луп", "петл", "погоня", "доск", "окно", "уходить", "тянуть", "крутить"],
+  "Информация": ["инфо", "информация", "аура", "видеть", "разведка", "читать", "подсказ", "координ"],
+  "Анти-туннель": ["туннел", "анти-туннель", "кемп", "снимать", "защит", "не дать убить", "обсессия"],
+  "Выживание": ["выжив", "выжить", "страховка", "соло", "подняться", "ползти", "жизнь"],
+  "Тотемы": ["тотем", "проклят", "hex", "ритуал", "магия"],
+  "Соло": ["соло", "один", "без команды", "сам", "самостоятельн"],
+  "Endgame": ["endgame", "конец", "ворота", "финал", "последний генератор", "эндгейм"],
+  "Давление": ["давление", "давить", "агрессив", "быстро", "прессинг", "не давать"],
+  "Погоня": ["погон", "преслед", "догон", "атака", "удар", "гнать"],
+  "Контроль генераторов": ["генератор", "гены", "ген", "замедл", "регресс", "контроль", "блокир"],
+  "Анти-луп": ["анти-луп", "луп", "доск", "окно", "ломать", "петл", "контроль петель"],
+  "Мобильность": ["мобиль", "скорост", "быстро", "рывок", "перемещ", "телепорт", "карта"],
+  "Раннее давление": ["начало", "старт", "ранн", "первый", "раннее"],
+  "Контроль": ["контроль", "зона", "удерж", "блокир", "не пускать"],
+  "Зонирование": ["зон", "территор", "участок", "контроль зоны"],
+  "Контроль зоны": ["зон", "территор", "участок", "контроль зоны"],
+  "Метательные": ["метат", "топор", "нож", "снаряд", "дистанц"],
+  "Магия": ["магия", "магич", "заклин", "спелл"],
+  "Хаос": ["хаос", "шум", "смел", "нестандарт", "рандом"],
+  "Карта": ["карта", "порталы", "позиц", "локац"]
+};
 
-    function normalize(value) {
-      return String(value || "")
-        .toLowerCase()
-        .replace(/ё/g, "е")
-        .replace(/\s+/g, " ")
-        .trim();
+function normalize(value) {
+  return String(value || "").toLowerCase().replace(/ё/g, "е").replace(/\s+/g, " ").trim();
+}
+
+function initials(name) {
+  return name.replace(/\(.*?\)/g, "").trim().split(/\s+/).slice(0, 2).map(part => part.charAt(0).toUpperCase()).join("");
+}
+
+function cardMarkup(item, type) {
+  const tags = (item.tags || []).map(tag => `<span class="tag">${tag}</span>`).join("");
+  const meta = type === "killer" ? item.alias : item.origin;
+  
+  // Добавляем блок "Как играть против" для маньяков
+  const counterHtml = (type === "killer" && item.counter) 
+    ? `<details style="margin-top:10px;border-top:1px dashed #333;"><summary style="color:#ffcc00;">Как играть против</summary><p style="color:#ffcc00;border-left-color:#ffcc00;">${item.counter}</p></details>` 
+    : "";
+
+  return `
+    <article class="card">
+      <div class="card-top">
+        <div class="avatar killer-avatar">${initials(item.name)}</div>
+        <div>
+          <h3>${item.name}</h3>
+          <p class="alias">${meta}</p>
+        </div>
+      </div>
+      <div class="tags">${tags}</div>
+      <p class="desc">${item.desc}</p>
+      <details>
+        <summary>Лор</summary>
+        <p>${item.lore}</p>
+      </details>
+      ${counterHtml}
+    </article>
+  `;
+}
+
+function renderCards(containerId, countId, items, type) {
+  const container = document.getElementById(containerId);
+  const count = document.getElementById(countId);
+  const query = normalize(document.getElementById("search").value);
+  
+  const filtered = items.filter(function (item) {
+    const haystack = normalize([item.name, item.alias || "", item.origin || "", item.desc, item.lore, (item.tags || []).join(" ")].join(" "));
+    return !query || haystack.includes(query);
+  });
+
+  container.innerHTML = filtered.length ? filtered.map(item => cardMarkup(item, type)).join("") : '<div class="empty" style="text-align:center;color:#666;padding:20px;">Ничего не найдено.</div>';
+  count.textContent = filtered.length + " из " + items.length;
+}
+
+function renderAll() {
+  renderCards("killersCards", "killersCount", killers, "killer");
+  renderCards("survivorsCards", "survivorsCount", survivors, "survivor");
+}
+
+// Генератор билдов
+function updateStyles() {
+  const role = document.getElementById("roleSelect").value;
+  const select = document.getElementById("styleSelect");
+  const options = STYLES[role] || [];
+  select.innerHTML = '<option value="">Любой / по описанию</option>' + options.map(style => `<option value="${style}">${style}</option>`).join("");
+}
+
+function textHits(text, tag) {
+  const words = SYNONYMS[tag] || [tag];
+  let hits = 0;
+  words.forEach(word => { if (text.includes(normalize(word))) hits += 1; });
+  if (text.includes(normalize(tag))) hits += 2;
+  return hits;
+}
+
+function scorePerk(perk, selectedStyle, text) {
+  let score = 0;
+  if (selectedStyle && perk.tags.includes(selectedStyle)) score += 8;
+  perk.tags.forEach(tag => { score += textHits(text, tag) * 3; });
+  return score;
+}
+
+function generateBuild() {
+  const role = document.getElementById("roleSelect").value;
+  const selectedStyle = document.getElementById("styleSelect").value;
+  const text = normalize(document.getElementById("styleText").value);
+  const pool = role === "killer" ? killerPerks : survivorPerks;
+  const roleLabel = role === "killer" ? "Маньяк" : "Выживший";
+
+  const scored = pool.map(perk => ({ ...perk, score: scorePerk(perk, selectedStyle, text) }))
+    .sort((a, b) => b.score - a.score || Math.random() - 0.5);
+
+  const chosen = [];
+  const used = new Set();
+
+  scored.forEach(perk => {
+    if (chosen.length < 4 && perk.score > 0 && !used.has(perk.name)) {
+      chosen.push(perk);
+      used.add(perk.name);
+    }
+  });
+  scored.forEach(perk => {
+    if (chosen.length < 4 && !used.has(perk.name)) {
+      chosen.push(perk);
+      used.add(perk.name);
+    }
+  });
+
+  const styleLabel = selectedStyle || "по описанию";
+  const result = document.getElementById("buildResult");
+  result.classList.add("visible");
+
+  const items = chosen.map(perk => `<li><strong>${perk.name}</strong> — ${perk.desc} <br><span style="font-size:11px;color:#777;">[${perk.tags.join(", ")}]</span></li>`).join("");
+  
+  let whyText = [];
+  if (selectedStyle) whyText.push(`выбран стиль «${selectedStyle}»`);
+  if (text) whyText.push(`учтено описание`);
+  if (!selectedStyle && !text) whyText.push(`явный стиль не задан, взята универсальная основа`);
+
+  result.innerHTML = `
+    <h3>Билд для роли: ${roleLabel}</h3>
+    <p style="color:#888;margin:0 0 10px;">Стиль: ${styleLabel}</p>
+    <ul>${items}</ul>
+    <p class="why"><strong>Почему так:</strong> ${whyText.join("; ")}. Перки отсортированы по совпадению с тегами.</p>
+  `;
+}
+
+// Мини-игра "Туман"
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+let score = 0;
+let highScore = localStorage.getItem("dbdHighScore") || 0;
+document.getElementById("highScoreVal").textContent = highScore;
+
+let player = { x: canvas.width / 2, y: canvas.height / 2, r: 15 };
+let drops = [];
+let isPlaying = false;
+let animationId;
+
+function spawnDrop() {
+  drops.push({
+    x: Math.random() * (canvas.width - 20) + 10,
+    y: -10,
+    r: 5,
+    speed: 2 + Math.random() * 2
+  });
+}
+
+function updateGame() {
+  if (!isPlaying) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  ctx.fillStyle = "#08080a";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.beginPath();
+  ctx.arc(player.x, player.y, player.r, 0, Math.PI * 2);
+  ctx.fillStyle = "#d92b3a";
+  ctx.fill();
+  ctx.shadowBlur = 15;
+  ctx.shadowColor = "#d92b3a";
+
+  for (let i = drops.length - 1; i >= 0; i--) {
+    let d = drops[i];
+    d.y += d.speed;
+    ctx.beginPath();
+    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+    ctx.fillStyle = "#ff3344";
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    let dist = Math.hypot(player.x - d.x, player.y - d.y);
+    if (dist < player.r + d.r) {
+      drops.splice(i, 1);
+      score++;
+      document.getElementById("scoreVal").textContent = score;
+      continue;
     }
 
-    function initials(name) {
-      return name
-        .replace(/\(.*?\)/g, "")
-        .trim()
-        .split(/\s+/)
-        .slice(0, 2)
-        .map(function (part) { return part.charAt(0).toUpperCase(); })
-        .join("");
+    if (d.y > canvas.height) {
+      drops.splice(i, 1);
+      gameOver();
+      return;
     }
+  }
 
-    function cardMarkup(item, type) {
-      const tags = (item.tags || []).map(function (tag) {
-        return '<span class="tag">' + tag + '</span>';
-      }).join("");
-      const meta = type === "killer" ? item.alias : item.origin;
-      return (
-        '<article class="card">' +
-          '<div class="card-top">' +
-            '<div class="avatar">' + initials(item.name) + '</div>' +
-            '<div>' +
-              '<h3>' + item.name + '</h3>' +
-              '<p class="alias">' + meta + '</p>' +
-            '</div>' +
-          '</div>' +
-          '<div class="tags">' + tags + '</div>' +
-          '<p class="desc">' + item.desc + '</p>' +
-          '<details>' +
-            '<summary>Лор</summary>' +
-            '<p>' + item.lore + '</p>' +
-          '</details>' +
-        '</article>'
-      );
-    }
+  if (Math.random() < 0.03) spawnDrop();
+  animationId = requestAnimationFrame(updateGame);
+}
 
-    function renderCards(containerId, countId, items, type) {
-      const container = document.getElementById(containerId);
-      const count = document.getElementById(countId);
-      const query = normalize(document.getElementById("search").value);
-      const filtered = items.filter(function (item) {
-        const haystack = normalize([
-          item.name,
-          item.alias || "",
-          item.origin || "",
-          item.desc,
-          item.lore,
-          (item.tags || []).join(" ")
-        ].join(" "));
-        return !query || haystack.includes(query);
-      });
+function gameOver() {
+  isPlaying = false;
+  cancelAnimationFrame(animationId);
+  document.getElementById("finalScore").textContent = score;
+  document.getElementById("gameOverScreen").classList.add("active");
+  if (score > highScore) {
+    highScore = score;
+    localStorage.setItem("dbdHighScore", highScore);
+    document.getElementById("highScoreVal").textContent = highScore;
+  }
+}
 
-      container.innerHTML = filtered.length
-        ? filtered.map(function (item) { return cardMarkup(item, type); }).join("")
-        : '<div class="empty">Ничего не найдено. Попробуйте другой запрос.</div>';
+function resetGame() {
+  score = 0;
+  drops = [];
+  document.getElementById("scoreVal").textContent = score;
+  document.getElementById("gameOverScreen").classList.remove("active");
+  player.x = canvas.width / 2;
+  player.y = canvas.height / 2;
+  isPlaying = true;
+  updateGame();
+}
 
-      count.textContent = filtered.length + " из " + items.length;
-    }
+canvas.addEventListener("touchmove", (e) => {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const touch = e.touches[0];
+  player.x = touch.clientX - rect.left;
+  player.y = touch.clientY - rect.top;
+}, { passive: false });
 
-    function renderAll() {
-      renderCards("killersCards", "killersCount", killers, "killer");
-      renderCards("survivorsCards", "survivorsCount", survivors, "survivor");
-    }
+canvas.addEventListener("mousemove", (e) => {
+  if (e.buttons !== 1) return;
+  const rect = canvas.getBoundingClientRect();
+  player.x = e.clientX - rect.left;
+  player.y = e.clientY - rect.top;
+});
 
-    function updateStyles() {
-      const role = document.getElementById("roleSelect").value;
-      const select = document.getElementById("styleSelect");
-      const options = STYLES[role] || [];
-      select.innerHTML = '<option value="">Любой / по описанию</option>' +
-        options.map(function (style) {
-          return '<option value="' + style + '">' + style + '</option>';
-        }).join("");
-    }
+// Аккаунт
+function checkAuth() {
+  const user = localStorage.getItem("dbdUser");
+  const authStatus = document.getElementById("authStatus");
+  const tabAccount = document.getElementById("tabAccount");
+  const accountContent = document.getElementById("accountContent");
 
-    function textHits(text, tag) {
-      const words = SYNONYMS[tag] || [tag];
-      let hits = 0;
-      words.forEach(function (word) {
-        if (text.includes(normalize(word))) hits += 1;
-      });
-      if (text.includes(normalize(tag))) hits += 2;
-      return hits;
-    }
+  if (user) {
+    authStatus.textContent = user;
+    tabAccount.style.display = "block";
+    accountContent.innerHTML = `
+      <div class="account-card">
+        <div class="avatar-big">${user[0].toUpperCase()}</div>
+        <h3>${user}</h3>
+        <p style="color:#888;margin-bottom:20px;">Рекорд в тумане: ${highScore}</p>
+        <button class="btn btn-outline" onclick="logout()">Выйти</button>
+      </div>
+    `;
+  } else {
+    authStatus.textContent = "Войти";
+    tabAccount.style.display = "none";
+    accountContent.innerHTML = `
+      <div class="account-card">
+        <h3>Создать профиль</h3>
+        <p style="color:#888;font-size:13px;margin-bottom:20px;">Введите имя, чтобы сохранять прогресс.</p>
+        <div class="input-group">
+          <label>Имя пользователя</label>
+          <input type="text" id="usernameInput" placeholder="Например: MegThomas">
+        </div>
+        <button class="btn" onclick="login()">Войти</button>
+      </div>
+    `;
+  }
+}
 
-    function scorePerk(perk, selectedStyle, text) {
-      let score = 0;
-      if (selectedStyle && perk.tags.includes(selectedStyle)) score += 8;
-      perk.tags.forEach(function (tag) {
-        score += textHits(text, tag) * 3;
-      });
-      if (selectedStyle) {
-        const related = SYNONYMS[selectedStyle] || [];
-        perk.tags.forEach(function (tag) {
-          related.forEach(function (word) {
-            if (normalize(tag).includes(normalize(word)) || normalize(word).includes(normalize(tag))) {
-              score += 1;
-            }
-          });
-        });
-      }
-      return score;
-    }
+function login() {
+  const input = document.getElementById("usernameInput");
+  if (input && input.value.trim()) {
+    localStorage.setItem("dbdUser", input.value.trim());
+    checkAuth();
+    document.querySelector('[data-tab="account"]').click();
+  }
+}
 
-    function generateBuild() {
-      const role = document.getElementById("roleSelect").value;
-      const selectedStyle = document.getElementById("styleSelect").value;
-      const text = normalize(document.getElementById("styleText").value);
-      const pool = role === "killer" ? killerPerks : survivorPerks;
-      const roleLabel = role === "killer" ? "Маньяк" : "Выживший";
+function logout() {
+  localStorage.removeItem("dbdUser");
+  checkAuth();
+  document.querySelector('[data-tab="killers"]').click();
+}
 
-      const scored = pool.map(function (perk) {
-        return {
-          name: perk.name,
-          tags: perk.tags,
-          desc: perk.desc,
-          score: scorePerk(perk, selectedStyle, text)
-        };
-      }).sort(function (a, b) {
-        return b.score - a.score || a.name.localeCompare(b.name, "ru");
-      });
+document.getElementById("authStatus").addEventListener("click", () => {
+  document.querySelector('[data-tab="account"]').click();
+});
 
-      const chosen = [];
-      const used = new Set();
-
-      scored.forEach(function (perk) {
-        if (chosen.length < 4 && perk.score > 0 && !used.has(perk.name)) {
-          chosen.push(perk);
-          used.add(perk.name);
-        }
-      });
-
-      scored.forEach(function (perk) {
-        if (chosen.length < 4 && !used.has(perk.name)) {
-          chosen.push(perk);
-          used.add(perk.name);
-        }
-      });
-
-      const styleLabel = selectedStyle || "по описанию";
-      const result = document.getElementById("buildResult");
-      result.classList.add("visible");
-
-      const items = chosen.map(function (perk) {
-        return '<li><strong>' + perk.name + '</strong> — ' + perk.desc +
-          ' <span class="muted">[' + perk.tags.join(", ") + ']</span></li>';
-      }).join("");
-
-      const reasons = [];
-      if (selectedStyle) reasons.push("выбран стиль «" + selectedStyle + "»");
-      if (text) reasons.push("учтено описание стиля игры");
-      if (!selectedStyle && !text) reasons.push("явный стиль не задан, поэтому взята универсальная основа");
-
-      result.innerHTML =
-        '<h3>Билд для роли: ' + roleLabel + '</h3>' +
-        '<p class="muted">Стиль: ' + styleLabel + '</p>' +
-        '<ul>' + items + '</ul>' +
-        '<p class="why"><strong>Почему так:</strong> ' + reasons.join("; ") + '. Перки отсортированы по совпадению с тегами и ключевыми словами. Проверьте сочетаемость с вашим персонажем и патчем.</p>' +
-        '<p class="note">Совет: если билд кажется слишком общим — добавьте в описание конкретные действия: «часто спасаю», «играю от петель», «люблю замедлять генераторы», «не хочу туннеля».</p>';
-    }
-
-    document.querySelectorAll(".tab-btn").forEach(function (button) {
-      button.addEventListener("click", function () {
-        document.querySelectorAll(".tab-btn").forEach(function (btn) {
-          btn.classList.remove("active");
-        });
-        document.querySelectorAll(".tab-panel").forEach(function (panel) {
-          panel.classList.remove("active");
-        });
-        button.classList.add("active");
-        document.getElementById(button.dataset.tab).classList.add("active");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-    });
-
-    document.getElementById("search").addEventListener("input", renderAll);
-    document.getElementById("roleSelect").addEventListener("change", updateStyles);
-    document.getElementById("generateBtn").addEventListener("click", generateBuild);
-
-    updateStyles();
-    renderAll();
-  </script>
-</body>
-</html>
+// Инициализация при загрузке
+document.querySelectorAll(".tab-btn").forEach(button => {
+  button.addEventListener("click", function
