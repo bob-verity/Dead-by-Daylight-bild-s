@@ -12,45 +12,19 @@
       --blood: #ff3344; --line: rgba(255,255,255,.06); --radius: 12px;
     }
     * { box-sizing: border-box; }
-    body {
-      margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(circle at 50% -10%, #1c0f13 0%, var(--bg) 60%);
-      color: var(--text); min-height: 100vh; background-attachment: fixed;
-    }
-    body::after {
-      content: ""; position: fixed; inset: 0; pointer-events: none;
-      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.04"/></svg>');
-      z-index: 999;
-    }
-    header {
-      position: sticky; top: 0; z-index: 50; background: rgba(5, 5, 7, 0.92);
-      backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding: 12px 14px 10px;
-    }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: radial-gradient(circle at 50% -10%, #1c0f13 0%, var(--bg) 60%); color: var(--text); min-height: 100vh; background-attachment: fixed; }
+    body::after { content: ""; position: fixed; inset: 0; pointer-events: none; background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.04"/></svg>'); z-index: 999; }
+    header { position: sticky; top: 0; z-index: 50; background: rgba(5, 5, 7, 0.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding: 12px 14px 10px; }
     .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-    .logo {
-      width: 38px; height: 38px; border-radius: 50%;
-      background: radial-gradient(circle, var(--accent2) 0%, var(--accent) 100%);
-      display: grid; place-items: center; font-size: 18px; font-weight: 900;
-      box-shadow: 0 0 12px rgba(217, 43, 58, 0.4); flex: 0 0 auto;
-    }
+    .logo { width: 38px; height: 38px; border-radius: 50%; background: radial-gradient(circle, var(--accent2) 0%, var(--accent) 100%); display: grid; place-items: center; font-size: 18px; font-weight: 900; box-shadow: 0 0 12px rgba(217, 43, 58, 0.4); flex: 0 0 auto; }
     .brand h1 { font-size: 17px; line-height: 1.1; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
     .brand p { margin: 3px 0 0; font-size: 11px; color: var(--muted); }
-    .search {
-      width: 100%; border: 1px solid #2a2a35; background: #0a0a0d; color: var(--text);
-      border-radius: 10px; padding: 12px 14px; font-size: 15px; outline: none; transition: 0.2s;
-    }
+    .search { width: 100%; border: 1px solid #2a2a35; background: #0a0a0d; color: var(--text); border-radius: 10px; padding: 12px 14px; font-size: 15px; outline: none; transition: 0.2s; }
     .search:focus { border-color: var(--accent2); box-shadow: 0 0 10px rgba(217,43,58,0.15); }
     nav.tabs { display: flex; gap: 6px; margin-top: 12px; overflow-x: auto; scrollbar-width: none; }
     nav.tabs::-webkit-scrollbar { display: none; }
-    .tab-btn {
-      flex: 1 0 auto; border: 1px solid var(--line); background: rgba(255,255,255,0.02);
-      color: var(--muted); border-radius: 8px; padding: 9px 12px; font-size: 12px;
-      font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: 0.2s;
-    }
-    .tab-btn.active {
-      color: #fff; background: linear-gradient(180deg, var(--accent2), var(--accent));
-      border-color: var(--blood); box-shadow: 0 4px 12px rgba(140,14,26,0.3);
-    }
+    .tab-btn { flex: 1 0 auto; border: 1px solid var(--line); background: rgba(255,255,255,0.02); color: var(--muted); border-radius: 8px; padding: 9px 12px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: 0.2s; }
+    .tab-btn.active { color: #fff; background: linear-gradient(180deg, var(--accent2), var(--accent)); border-color: var(--blood); box-shadow: 0 4px 12px rgba(140,14,26,0.3); }
     main { padding: 14px 14px 90px; max-width: 980px; margin: 0 auto; }
     .tab-panel { display: none; animation: fadeIn 0.3s ease; }
     .tab-panel.active { display: block; }
@@ -59,33 +33,18 @@
     .panel-head h2 { margin: 0; font-size: 18px; }
     .count { color: var(--muted); font-size: 12px; }
     .cards { display: grid; gap: 12px; }
-    .card {
-      background: linear-gradient(180deg, var(--card2), var(--card));
-      border: 1px solid var(--line); border-radius: var(--radius); padding: 16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4); position: relative; overflow: hidden;
-    }
+    .card { background: linear-gradient(180deg, var(--card2), var(--card)); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: 0 6px 20px rgba(0,0,0,0.4); position: relative; overflow: hidden; }
     .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent2), transparent); opacity: 0.4; }
     .card-top { display: flex; gap: 12px; align-items: flex-start; }
-    .avatar {
-      width: 46px; height: 46px; border-radius: 8px; flex: 0 0 auto;
-      display: grid; place-items: center; background: #222; border: 1px solid #333;
-      color: var(--text); font-weight: 900; font-size: 18px;
-    }
+    .avatar { width: 46px; height: 46px; border-radius: 8px; flex: 0 0 auto; display: grid; place-items: center; background: #222; border: 1px solid #333; color: var(--text); font-weight: 900; font-size: 18px; }
     .killer-avatar { border-color: rgba(217,43,58,0.4); }
     .card h3 { margin: 0; font-size: 16px; line-height: 1.2; }
     .alias { margin: 4px 0 0; color: var(--accent2); font-size: 12px; font-weight: 600; }
     .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
-    .tag {
-      font-size: 10px; color: #ccc; background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08); padding: 4px 8px; border-radius: 4px;
-      text-transform: uppercase; letter-spacing: 0.5px;
-    }
+    .tag { font-size: 10px; color: #ccc; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 4px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
     .desc { margin: 8px 0 0; font-size: 14px; line-height: 1.5; color: #c4c4cc; }
     details { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 14px; }
-    summary {
-      cursor: pointer; color: #fff; font-size: 13px; font-weight: 800; list-style: none;
-      display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; color: var(--accent2);
-    }
+    summary { cursor: pointer; color: #fff; font-size: 13px; font-weight: 800; list-style: none; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; color: var(--accent2); }
     summary::-webkit-details-marker { display: none; } summary::after { content: "+"; color: var(--accent2); font-size: 16px; }
     details[open] summary::after { content: "−"; }
     details p { margin: 12px 0 0; color: #9e9eab; font-size: 14px; line-height: 1.6; background: rgba(0,0,0,0.25); padding: 12px; border-radius: 6px; border-left: 2px solid var(--accent); }
@@ -207,8 +166,7 @@
 
   <footer>
     Фанатский проект. Dead by Daylight © Behaviour Interactive.
-  </footer>
-  <script>
+  </footer><script>
   // ==========================================
   // 1. БАЗА ДАННЫХ (ОФИЦИАЛЬНЫЙ ПЕРЕВОД + СОВЕТЫ)
   // ==========================================
@@ -247,41 +205,40 @@
     { name: "Торговка черепами (The Skull Merchant)", alias: "Адриана Имай", tags: ["Контроль", "Информация"], desc: "Использует дроны и ловушки, контролирует территорию.", lore: "Богатая охотница, превратившая убийства в соревнование. Она изучает жертв как трофеи.", counter: "Сбивайте её дроны (если можете). Когда вас сканирует дрон, у вас появляется метка, и она видит вас. Уходите из зоны действия дронов." },
     { name: "Сингулярность (The Singularity)", alias: "HUX-A7-13", tags: ["Информация", "Карта"], desc: "Размещает биоподы, телепортируется и создаёт карту.", lore: "Искусственный интеллект, получивший свободу и одержимость совершенствованием через охоту.", counter: "Уничтожайте биоподы (камеры), которые он ставит. Если он телепортируется к вам, отбегайте от места телепорта, чтобы не попасть под удар." }
   ];
-
-  const survivors = [
-    { name: "Дуайт Фэрфилд", origin: "Лидер", tags: ["Поддержка", "Информация"], desc: "Командный игрок, полезен в координации.", lore: "Скромный сотрудник, который в тумане стал лидером. Он учится брать ответственность и вести других." },
-    { name: "Мэг Томас", origin: "Спринт", tags: ["Луп", "Мобильность"], desc: "Быстрая выжившая, хорошо держит петли.", lore: "Легкоатлетка, стремившаяся к скорости. В тумане её упорство стало способом выжить." },
-    { name: "Клодетт Морэль", origin: "Лечение", tags: ["Лечение", "Стелс"], desc: "Сильный медик и соло-выжившая.", lore: "Ботаник-интроверт, нашедшая в растениях смысл. Она помогает другим, оставаясь незаметной." },
-    { name: "Джейк Парк", origin: "Стелс", tags: ["Стелс", "Генераторы"], desc: "Тихий игрок, хорошо работает с генераторами.", lore: "Сын богатой семьи, сбежавший в природу. Он не доверяет людям, но умеет выживать." },
-    { name: "Ниа Карлссон", origin: "Луп", tags: ["Луп", "Стелс"], desc: "Гибкая выжившая для агрессивных петель.", lore: "Бунтарка из Швеции, привыкшая полагаться на скорость и импровизацию." },
-    { name: "Лори Строуд", origin: "Endgame", tags: ["Endgame", "Луп"], desc: "Хороша в затягивании матча и игре против преследования.", lore: "Выжившая после нападения Майкла Майерса. Её жизнь стала борьбой с необъяснимым злом." },
-    { name: "Билл Овербек", origin: "Поддержка", tags: ["Поддержка", "Анти-туннель"], desc: "Ветеран, который помогает союзникам и не боится рисковать.", lore: "Старый солдат, привыкший к потерям. Он сражается не ради славы, а ради других." },
-    { name: "Дэвид Кинг", origin: "Луп", tags: ["Луп", "Погоня"], desc: "Любит активные петли и давление на маньяка.", lore: "Уличный боец и спортсмен, который не отступает. Его упрямство помогает ему в тумане." },
-    { name: "Квентин Смит", origin: "Генераторы", tags: ["Генераторы", "Поддержка"], desc: "Практичный игрок, ориентированный на задачи.", lore: "Парень, боровшийся с кошмаром Фредди. Он знает, что страх можно пережить." },
-    { name: "Дэвид Тапп", origin: "Информация", tags: ["Информация", "Погоня"], desc: "Полезен в чтении карты и давлении на маньяка.", lore: "Полицейский, расследовавший дело Пилы. Он привык видеть ложь и искать правду." },
-    { name: "Кейт Денсон", origin: "Луп", tags: ["Луп", "Поддержка"], desc: "Универсальная выжившая для петель.", lore: "Певица, мечтавшая о сцене. В тумане она сохраняет тепло и веру в людей." },
-    { name: "Адам Фрэнсис", origin: "Генераторы", tags: ["Генераторы", "Поддержка"], desc: "Сбалансированный персонаж для задач и спасений.", lore: "Учитель и писатель, оказавшийся в центре трагедии. Он ищет смысл даже в кошмаре." },
-    { name: "Джефф Йохансен", origin: "Поддержка", tags: ["Поддержка", "Стелс"], desc: "Тихий союзник, полезный в осторожных матчах.", lore: "Музыкант и художник, который предпочитает помогать другим, оставаясь в тени." },
-    { name: "Джейн Ромеро", origin: "Выживание", tags: ["Выживание", "Поддержка"], desc: "Уверенная выжившая для командной игры.", lore: "Телеведущая, привыкшая быть на виду. В тумане она учится бороться за себя и других." },
-    { name: "Эш Уильямс", origin: "Анти-туннель", tags: ["Анти-туннель", "Хаос"], desc: "Не боится быть целью и любит нестандартные ситуации.", lore: "Продавец из S-Mart, ставший невольным героем. Он спасает мир с неловким юмором." },
-    { name: "Нэнси Уилер", origin: "Информация", tags: ["Информация", "Стелс"], desc: "Осторожная выжившая, хорошо читает обстановку.", lore: "Подруга Майка и свидетель странных событий в Хокинсе. Она не сдаётся даже перед неизвестным." },
-    { name: "Стив Харрингтон", origin: "Луп", tags: ["Луп", "Поддержка"], desc: "Универсал для петель и помощи союзникам.", lore: "Популярный парень из Хокинса, выросший в более смелого человека. Он защищает тех, кто рядом." },
-    { name: "Юи Кимура", origin: "Луп", tags: ["Луп", "Погоня"], desc: "Сильная в активных петлях и давлении на маньяка.", lore: "Гонщица из Японии, привыкшая к скорости и риску. Она не любит ждать." },
-    { name: "Зарина Кассир", origin: "Информация", tags: ["Информация", "Поддержка"], desc: "Полезна в координации и раскрытии действий маньяка.", lore: "Журналистка, расследовавшая преступления. Она верит, что правда важнее страха." },
-    { name: "Шерил Мейсон", origin: "Анти-проклятие", tags: ["Тотемы", "Поддержка"], desc: "Хороша против тотемов и в поддержке команды.", lore: "Дочь Гарри Мейсона, связанная с Сайлент Хиллом. Она знает, как выглядит настоящий кошмар." },
-    { name: "Феликс Рихтер", origin: "Генераторы", tags: ["Генераторы", "Информация"], desc: "Практичный игрок для задач и чтения карты.", lore: "Архитектор, чья семья связана с тайнами тумана. Он ищет ответы в чертежах и памяти." },
-    { name: "Элоди Ракото", origin: "Стелс", tags: ["Стелс", "Информация"], desc: "Осторожная выжившая, полезная в скрытых сценариях.", lore: "Писательница, исследующая оккультное. Она привыкла доверять интуиции." },
-    { name: "Юн-Джин Ли", origin: "Генераторы", tags: ["Генераторы", "Давление"], desc: "Любит быстро выполнять задачи и не тратить время.", lore: "Продюсер, привыкшая к жёсткой конкуренции. Она не любит проигрывать." },
-    { name: "Джилл Валентайн", origin: "Генераторы", tags: ["Генераторы", "Выживание"], desc: "Собранная выжившая для задач и сложных ситуаций.", lore: "Бывшая сотрудница S.T.A.R.S., пережившая Raccoon City. Она сохраняет контроль в хаосе." },
-    { name: "Леон С. Кеннеди", origin: "Поддержка", tags: ["Поддержка", "Луп"], desc: "Универсал для спасений и активных петель.", lore: "Полицейский, ставший свидетелем биологического кошмара. Он не оставляет людей позади." },
-    { name: "Микаэла Рид", origin: "Тотемы", tags: ["Тотемы", "Поддержка"], desc: "Играет вокруг тотемов и поддержки команды.", lore: "Ведьма-самоучка, верящая в силу ритуалов. Она ищет свет даже в тумане." },
-    { name: "Джона Васкес", origin: "Генераторы", tags: ["Генераторы", "Информация"], desc: "Полезен в координации и быстром выполнении задач.", lore: "Криптограф, привыкший искать закономерности. Он видит хаос как задачу." },
-    { name: "Йоичи Асакава", origin: "Информация", tags: ["Информация", "Тотемы"], desc: "Чувствует опасность и помогает команде с проклятиями.", lore: "Сын Рики, связанный с проклятием Садако. Он знает цену неверного шага." },
-    { name: "Хэдди Каур", origin: "Информация", tags: ["Информация", "Стелс"], desc: "Осторожная выжившая с уклоном в разведку.", lore: "Исследовательница паранормального, которая столкнулась с тем, что нельзя объяснить." },
-    { name: "Ада Вонг", origin: "Стелс", tags: ["Стелс", "Генераторы"], desc: "Хладнокровная выжившая, любит скрытность и задачи.", lore: "Агент, привыкшая работать в одиночку. Она всегда думает на несколько шагов вперёд." },
-    { name: "Ребекка Чемберс", origin: "Лечение", tags: ["Лечение", "Поддержка"], desc: "Сильный медик и командный игрок.", lore: "Специалистка по медицине и выживанию. Она сохраняет спокойствие, когда другие паникуют." },
-    { name: "Витторио Тоскано", origin: "Информация", tags: ["Информация", "Тотемы"], desc: "Полезен в игре против тотемов и скрытых механик.", lore: "Итальянский учёный, искавший запретные знания. Туман стал его последним экспериментом
-        { name: "Талита Лира", origin: "Поддержка", tags: ["Поддержка", "Мобильность"], desc: "Командная выжившая для спасений и быстрых решений.", lore: "Сестра Ренато, выросшая в Бразилии. Она верит в семью и взаимовыручку." },
+const survivors = [
+  { name: "Дуайт Фэрфилд", origin: "Лидер", tags: ["Поддержка", "Информация"], desc: "Командный игрок, полезен в координации.", lore: "Скромный сотрудник, который в тумане стал лидером. Он учится брать ответственность и вести других." },
+  { name: "Мэг Томас", origin: "Спринт", tags: ["Луп", "Мобильность"], desc: "Быстрая выжившая, хорошо держит петли.", lore: "Легкоатлетка, стремившаяся к скорости. В тумане её упорство стало способом выжить." },
+  { name: "Клодетт Морэль", origin: "Лечение", tags: ["Лечение", "Стелс"], desc: "Сильный медик и соло-выжившая.", lore: "Ботаник-интроверт, нашедшая в растениях смысл. Она помогает другим, оставаясь незаметной." },
+  { name: "Джейк Парк", origin: "Стелс", tags: ["Стелс", "Генераторы"], desc: "Тихий игрок, хорошо работает с генераторами.", lore: "Сын богатой семьи, сбежавший в природу. Он не доверяет людям, но умеет выживать." },
+  { name: "Ниа Карлссон", origin: "Луп", tags: ["Луп", "Стелс"], desc: "Гибкая выжившая для агрессивных петель.", lore: "Бунтарка из Швеции, привыкшая полагаться на скорость и импровизацию." },
+  { name: "Лори Строуд", origin: "Endgame", tags: ["Endgame", "Луп"], desc: "Хороша в затягивании матча и игре против преследования.", lore: "Выжившая после нападения Майкла Майерса. Её жизнь стала борьбой с необъяснимым злом." },
+  { name: "Билл Овербек", origin: "Поддержка", tags: ["Поддержка", "Анти-туннель"], desc: "Ветеран, который помогает союзникам и не боится рисковать.", lore: "Старый солдат, привыкший к потерям. Он сражается не ради славы, а ради других." },
+  { name: "Дэвид Кинг", origin: "Луп", tags: ["Луп", "Погоня"], desc: "Любит активные петли и давление на маньяка.", lore: "Уличный боец и спортсмен, который не отступает. Его упрямство помогает ему в тумане." },
+  { name: "Квентин Смит", origin: "Генераторы", tags: ["Генераторы", "Поддержка"], desc: "Практичный игрок, ориентированный на задачи.", lore: "Парень, боровшийся с кошмаром Фредди. Он знает, что страх можно пережить." },
+  { name: "Дэвид Тапп", origin: "Информация", tags: ["Информация", "Погоня"], desc: "Полезен в чтении карты и давлении на маньяка.", lore: "Полицейский, расследовавший дело Пилы. Он привык видеть ложь и искать правду." },
+  { name: "Кейт Денсон", origin: "Луп", tags: ["Луп", "Поддержка"], desc: "Универсальная выжившая для петель.", lore: "Певица, мечтавшая о сцене. В тумане она сохраняет тепло и веру в людей." },
+  { name: "Адам Фрэнсис", origin: "Генераторы", tags: ["Генераторы", "Поддержка"], desc: "Сбалансированный персонаж для задач и спасений.", lore: "Учитель и писатель, оказавшийся в центре трагедии. Он ищет смысл даже в кошмаре." },
+  { name: "Джефф Йохансен", origin: "Поддержка", tags: ["Поддержка", "Стелс"], desc: "Тихий союзник, полезный в осторожных матчах.", lore: "Музыкант и художник, который предпочитает помогать другим, оставаясь в тени." },
+  { name: "Джейн Ромеро", origin: "Выживание", tags: ["Выживание", "Поддержка"], desc: "Уверенная выжившая для командной игры.", lore: "Телеведущая, привыкшая быть на виду. В тумане она учится бороться за себя и других." },
+  { name: "Эш Уильямс", origin: "Анти-туннель", tags: ["Анти-туннель", "Хаос"], desc: "Не боится быть целью и любит нестандартные ситуации.", lore: "Продавец из S-Mart, ставший невольным героем. Он спасает мир с неловким юмором." },
+  { name: "Нэнси Уилер", origin: "Информация", tags: ["Информация", "Стелс"], desc: "Осторожная выжившая, хорошо читает обстановку.", lore: "Подруга Майка и свидетель странных событий в Хокинсе. Она не сдаётся даже перед неизвестным." },
+  { name: "Стив Харрингтон", origin: "Луп", tags: ["Луп", "Поддержка"], desc: "Универсал для петель и помощи союзникам.", lore: "Популярный парень из Хокинса, выросший в более смелого человека. Он защищает тех, кто рядом." },
+  { name: "Юи Кимура", origin: "Луп", tags: ["Луп", "Погоня"], desc: "Сильная в активных петлях и давлении на маньяка.", lore: "Гонщица из Японии, привыкшая к скорости и риску. Она не любит ждать." },
+  { name: "Зарина Кассир", origin: "Информация", tags: ["Информация", "Поддержка"], desc: "Полезна в координации и раскрытии действий маньяка.", lore: "Журналистка, расследовавшая преступления. Она верит, что правда важнее страха." },
+  { name: "Шерил Мейсон", origin: "Анти-проклятие", tags: ["Тотемы", "Поддержка"], desc: "Хороша против тотемов и в поддержке команды.", lore: "Дочь Гарри Мейсона, связанная с Сайлент Хиллом. Она знает, как выглядит настоящий кошмар." },
+  { name: "Феликс Рихтер", origin: "Генераторы", tags: ["Генераторы", "Информация"], desc: "Практичный игрок для задач и чтения карты.", lore: "Архитектор, чья семья связана с тайнами тумана. Он ищет ответы в чертежах и памяти." },
+  { name: "Элоди Ракото", origin: "Стелс", tags: ["Стелс", "Информация"], desc: "Осторожная выжившая, полезная в скрытых сценариях.", lore: "Писательница, исследующая оккультное. Она привыкла доверять интуиции." },
+  { name: "Юн-Джин Ли", origin: "Генераторы", tags: ["Генераторы", "Давление"], desc: "Любит быстро выполнять задачи и не тратить время.", lore: "Продюсер, привыкшая к жёсткой конкуренции. Она не любит проигрывать." },
+  { name: "Джилл Валентайн", origin: "Генераторы", tags: ["Генераторы", "Выживание"], desc: "Собранная выжившая для задач и сложных ситуаций.", lore: "Бывшая сотрудница S.T.A.R.S., пережившая Raccoon City. Она сохраняет контроль в хаосе." },
+  { name: "Леон С. Кеннеди", origin: "Поддержка", tags: ["Поддержка", "Луп"], desc: "Универсал для спасений и активных петель.", lore: "Полицейский, ставший свидетелем биологического кошмара. Он не оставляет людей позади." },
+  { name: "Микаэла Рид", origin: "Тотемы", tags: ["Тотемы", "Поддержка"], desc: "Играет вокруг тотемов и поддержки команды.", lore: "Ведьма-самоучка, верящая в силу ритуалов. Она ищет свет даже в тумане." },
+  { name: "Джона Васкес", origin: "Генераторы", tags: ["Генераторы", "Информация"], desc: "Полезен в координации и быстром выполнении задач.", lore: "Криптограф, привыкший искать закономерности. Он видит хаос как задачу." },
+  { name: "Йоичи Асакава", origin: "Информация", tags: ["Информация", "Тотемы"], desc: "Чувствует опасность и помогает команде с проклятиями.", lore: "Сын Рики, связанный с проклятием Садако. Он знает цену неверного шага." },
+  { name: "Хэдди Каур", origin: "Информация", tags: ["Информация", "Стелс"], desc: "Осторожная выжившая с уклоном в разведку.", lore: "Исследовательница паранормального, которая столкнулась с тем, что нельзя объяснить." },
+  { name: "Ада Вонг", origin: "Стелс", tags: ["Стелс", "Генераторы"], desc: "Хладнокровная выжившая, любит скрытность и задачи.", lore: "Агент, привыкшая работать в одиночку. Она всегда думает на несколько шагов вперёд." },
+  { name: "Ребекка Чемберс", origin: "Лечение", tags: ["Лечение", "Поддержка"], desc: "Сильный медик и командный игрок.", lore: "Специалистка по медицине и выживанию. Она сохраняет спокойствие, когда другие паникуют." },
+  { name: "Витторио Тоскано", origin: "Информация", tags: ["Информация", "Тотемы"], desc: "Полезен в игре против тотемов и скрытых механик.", lore: "Итальянский учёный, искавший запретные знания. Туман стал его последним экспериментом." },
+  { name: "Талита Лира", origin: "Поддержка", tags: ["Поддержка", "Мобильность"], desc: "Командная выжившая для спасений и быстрых решений.", lore: "Сестра Ренато, выросшая в Бразилии. Она верит в семью и взаимовыручку." },
   { name: "Ренато Лира", origin: "Луп", tags: ["Луп", "Поддержка"], desc: "Гибкий игрок для петель и помощи команде.", lore: "Брат Талиты, привыкший защищать близких. Он не любит оставаться в стороне." },
   { name: "Габриэль Сома", origin: "Генераторы", tags: ["Генераторы", "Мобильность"], desc: "Быстрый игрок для задач и смены позиции.", lore: "Космический инженер, оказавшийся в тумане после катастрофы. Он ищет способ вернуться." },
   { name: "Николас Кейдж", origin: "Хаос", tags: ["Поддержка", "Выживание"], desc: "Нестандартная выжившая для смелых и шумных действий.", lore: "Актёр, оказавшийся в кошмаре. Он реагирует на ужас с драматизмом и неожиданной стойкостью." },
@@ -382,318 +339,333 @@ const killerPerks = [
   { name: "Floods of Rage", tags: ["Информация"], desc: "Раскрывает выживших после снятия с особого крюка." },
   { name: "Thrilling Tremors", tags: ["Информация", "Контроль генераторов"], desc: "Блокирует генераторы и раскрывает выживших после повешения." }
 ];
+    const STYLES = {
+      survivor: ["Генераторы", "Лечение", "Поддержка", "Стелс", "Луп", "Информация", "Анти-туннель", "Выживание", "Тотемы", "Соло", "Endgame"],
+      killer: ["Давление", "Стелс", "Погоня", "Контроль генераторов", "Анти-луп", "Мобильность", "Информация", "Endgame"]
+    };
 
-const STYLES = {
-  survivor: ["Генераторы", "Лечение", "Поддержка", "Стелс", "Луп", "Информация", "Анти-туннель", "Выживание", "Тотемы", "Соло", "Endgame"],
-  killer: ["Давление", "Стелс", "Погоня", "Контроль генераторов", "Анти-луп", "Мобильность", "Информация", "Endgame"]
-};
+    const SYNONYMS = {
+      "Генераторы": ["ген", "гены", "генератор", "ремонт", "задачи", "скорость генераторов", "чинить", "починка"],
+      "Лечение": ["леч", "лечить", "лечение", "медик", "аптечка", "ранен", "хил", "самолечение"],
+      "Поддержка": ["поддерж", "спас", "спасать", "команда", "союзник", "помогать", "альтруизм", "снять с крюка"],
+      "Стелс": ["стелс", "скрыт", "тихо", "незамет", "прятаться", "кусты", "скрытность"],
+      "Луп": ["луп", "петл", "погоня", "доск", "окно", "уходить", "тянуть", "крутить"],
+      "Информация": ["инфо", "информация", "аура", "видеть", "разведка", "читать", "подсказ", "координ"],
+      "Анти-туннель": ["туннел", "анти-туннель", "кемп", "снимать", "защит", "не дать убить", "обсессия"],
+      "Выживание": ["выжив", "выжить", "страховка", "соло", "подняться", "ползти", "жизнь"],
+      "Тотемы": ["тотем", "проклят", "hex", "ритуал", "магия"],
+      "Соло": ["соло", "один", "без команды", "сам", "самостоятельн"],
+      "Endgame": ["endgame", "конец", "ворота", "финал", "последний генератор", "эндгейм"],
+      "Давление": ["давление", "давить", "агрессив", "быстро", "прессинг", "не давать"],
+      "Погоня": ["погон", "преслед", "догон", "атака", "удар", "гнать"],
+      "Контроль генераторов": ["генератор", "гены", "ген", "замедл", "регресс", "контроль", "блокир"],
+      "Анти-луп": ["анти-луп", "луп", "доск", "окно", "ломать", "петл", "контроль петель"],
+      "Мобильность": ["мобиль", "скорост", "быстро", "рывок", "перемещ", "телепорт", "карта"],
+      "Раннее давление": ["начало", "старт", "ранн", "первый", "раннее"],
+      "Контроль": ["контроль", "зона", "удерж", "блокир", "не пускать"],
+      "Зонирование": ["зон", "территор", "участок", "контроль зоны"],
+      "Контроль зоны": ["зон", "территор", "участок", "контроль зоны"],
+      "Метательные": ["метат", "топор", "нож", "снаряд", "дистанц"],
+      "Магия": ["магия", "магич", "заклин", "спелл"],
+      "Хаос": ["хаос", "шум", "смел", "нестандарт", "рандом"],
+      "Карта": ["карта", "порталы", "позиц", "локац"]
+    };
 
-const SYNONYMS = {
-  "Генераторы": ["ген", "гены", "генератор", "ремонт", "задачи", "скорость генераторов", "чинить", "починка"],
-  "Лечение": ["леч", "лечить", "лечение", "медик", "аптечка", "ранен", "хил", "самолечение"],
-  "Поддержка": ["поддерж", "спас", "спасать", "команда", "союзник", "помогать", "альтруизм", "снять с крюка"],
-  "Стелс": ["стелс", "скрыт", "тихо", "незамет", "прятаться", "кусты", "скрытность"],
-  "Луп": ["луп", "петл", "погоня", "доск", "окно", "уходить", "тянуть", "крутить"],
-  "Информация": ["инфо", "информация", "аура", "видеть", "разведка", "читать", "подсказ", "координ"],
-  "Анти-туннель": ["туннел", "анти-туннель", "кемп", "снимать", "защит", "не дать убить", "обсессия"],
-  "Выживание": ["выжив", "выжить", "страховка", "соло", "подняться", "ползти", "жизнь"],
-  "Тотемы": ["тотем", "проклят", "hex", "ритуал", "магия"],
-  "Соло": ["соло", "один", "без команды", "сам", "самостоятельн"],
-  "Endgame": ["endgame", "конец", "ворота", "финал", "последний генератор", "эндгейм"],
-  "Давление": ["давление", "давить", "агрессив", "быстро", "прессинг", "не давать"],
-  "Погоня": ["погон", "преслед", "догон", "атака", "удар", "гнать"],
-  "Контроль генераторов": ["генератор", "гены", "ген", "замедл", "регресс", "контроль", "блокир"],
-  "Анти-луп": ["анти-луп", "луп", "доск", "окно", "ломать", "петл", "контроль петель"],
-  "Мобильность": ["мобиль", "скорост", "быстро", "рывок", "перемещ", "телепорт", "карта"],
-  "Раннее давление": ["начало", "старт", "ранн", "первый", "раннее"],
-  "Контроль": ["контроль", "зона", "удерж", "блокир", "не пускать"],
-  "Зонирование": ["зон", "территор", "участок", "контроль зоны"],
-  "Контроль зоны": ["зон", "территор", "участок", "контроль зоны"],
-  "Метательные": ["метат", "топор", "нож", "снаряд", "дистанц"],
-  "Магия": ["магия", "магич", "заклин", "спелл"],
-  "Хаос": ["хаос", "шум", "смел", "нестандарт", "рандом"],
-  "Карта": ["карта", "порталы", "позиц", "локац"]
-};
-
-function normalize(value) {
-  return String(value || "").toLowerCase().replace(/ё/g, "е").replace(/\s+/g, " ").trim();
-}
-
-function initials(name) {
-  return name.replace(/\(.*?\)/g, "").trim().split(/\s+/).slice(0, 2).map(part => part.charAt(0).toUpperCase()).join("");
-}
-
-function cardMarkup(item, type) {
-  const tags = (item.tags || []).map(tag => `<span class="tag">${tag}</span>`).join("");
-  const meta = type === "killer" ? item.alias : item.origin;
-  
-  // Добавляем блок "Как играть против" для маньяков
-  const counterHtml = (type === "killer" && item.counter) 
-    ? `<details style="margin-top:10px;border-top:1px dashed #333;"><summary style="color:#ffcc00;">Как играть против</summary><p style="color:#ffcc00;border-left-color:#ffcc00;">${item.counter}</p></details>` 
-    : "";
-
-  return `
-    <article class="card">
-      <div class="card-top">
-        <div class="avatar killer-avatar">${initials(item.name)}</div>
-        <div>
-          <h3>${item.name}</h3>
-          <p class="alias">${meta}</p>
-        </div>
-      </div>
-      <div class="tags">${tags}</div>
-      <p class="desc">${item.desc}</p>
-      <details>
-        <summary>Лор</summary>
-        <p>${item.lore}</p>
-      </details>
-      ${counterHtml}
-    </article>
-  `;
-}
-
-function renderCards(containerId, countId, items, type) {
-  const container = document.getElementById(containerId);
-  const count = document.getElementById(countId);
-  const query = normalize(document.getElementById("search").value);
-  
-  const filtered = items.filter(function (item) {
-    const haystack = normalize([item.name, item.alias || "", item.origin || "", item.desc, item.lore, (item.tags || []).join(" ")].join(" "));
-    return !query || haystack.includes(query);
-  });
-
-  container.innerHTML = filtered.length ? filtered.map(item => cardMarkup(item, type)).join("") : '<div class="empty" style="text-align:center;color:#666;padding:20px;">Ничего не найдено.</div>';
-  count.textContent = filtered.length + " из " + items.length;
-}
-
-function renderAll() {
-  renderCards("killersCards", "killersCount", killers, "killer");
-  renderCards("survivorsCards", "survivorsCount", survivors, "survivor");
-}
-
-// Генератор билдов
-function updateStyles() {
-  const role = document.getElementById("roleSelect").value;
-  const select = document.getElementById("styleSelect");
-  const options = STYLES[role] || [];
-  select.innerHTML = '<option value="">Любой / по описанию</option>' + options.map(style => `<option value="${style}">${style}</option>`).join("");
-}
-
-function textHits(text, tag) {
-  const words = SYNONYMS[tag] || [tag];
-  let hits = 0;
-  words.forEach(word => { if (text.includes(normalize(word))) hits += 1; });
-  if (text.includes(normalize(tag))) hits += 2;
-  return hits;
-}
-
-function scorePerk(perk, selectedStyle, text) {
-  let score = 0;
-  if (selectedStyle && perk.tags.includes(selectedStyle)) score += 8;
-  perk.tags.forEach(tag => { score += textHits(text, tag) * 3; });
-  return score;
-}
-
-function generateBuild() {
-  const role = document.getElementById("roleSelect").value;
-  const selectedStyle = document.getElementById("styleSelect").value;
-  const text = normalize(document.getElementById("styleText").value);
-  const pool = role === "killer" ? killerPerks : survivorPerks;
-  const roleLabel = role === "killer" ? "Маньяк" : "Выживший";
-
-  const scored = pool.map(perk => ({ ...perk, score: scorePerk(perk, selectedStyle, text) }))
-    .sort((a, b) => b.score - a.score || Math.random() - 0.5);
-
-  const chosen = [];
-  const used = new Set();
-
-  scored.forEach(perk => {
-    if (chosen.length < 4 && perk.score > 0 && !used.has(perk.name)) {
-      chosen.push(perk);
-      used.add(perk.name);
-    }
-  });
-  scored.forEach(perk => {
-    if (chosen.length < 4 && !used.has(perk.name)) {
-      chosen.push(perk);
-      used.add(perk.name);
-    }
-  });
-
-  const styleLabel = selectedStyle || "по описанию";
-  const result = document.getElementById("buildResult");
-  result.classList.add("visible");
-
-  const items = chosen.map(perk => `<li><strong>${perk.name}</strong> — ${perk.desc} <br><span style="font-size:11px;color:#777;">[${perk.tags.join(", ")}]</span></li>`).join("");
-  
-  let whyText = [];
-  if (selectedStyle) whyText.push(`выбран стиль «${selectedStyle}»`);
-  if (text) whyText.push(`учтено описание`);
-  if (!selectedStyle && !text) whyText.push(`явный стиль не задан, взята универсальная основа`);
-
-  result.innerHTML = `
-    <h3>Билд для роли: ${roleLabel}</h3>
-    <p style="color:#888;margin:0 0 10px;">Стиль: ${styleLabel}</p>
-    <ul>${items}</ul>
-    <p class="why"><strong>Почему так:</strong> ${whyText.join("; ")}. Перки отсортированы по совпадению с тегами.</p>
-  `;
-}
-
-// Мини-игра "Туман"
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-let score = 0;
-let highScore = localStorage.getItem("dbdHighScore") || 0;
-document.getElementById("highScoreVal").textContent = highScore;
-
-let player = { x: canvas.width / 2, y: canvas.height / 2, r: 15 };
-let drops = [];
-let isPlaying = false;
-let animationId;
-
-function spawnDrop() {
-  drops.push({
-    x: Math.random() * (canvas.width - 20) + 10,
-    y: -10,
-    r: 5,
-    speed: 2 + Math.random() * 2
-  });
-}
-
-function updateGame() {
-  if (!isPlaying) return;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-  ctx.fillStyle = "#08080a";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.beginPath();
-  ctx.arc(player.x, player.y, player.r, 0, Math.PI * 2);
-  ctx.fillStyle = "#d92b3a";
-  ctx.fill();
-  ctx.shadowBlur = 15;
-  ctx.shadowColor = "#d92b3a";
-
-  for (let i = drops.length - 1; i >= 0; i--) {
-    let d = drops[i];
-    d.y += d.speed;
-    ctx.beginPath();
-    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-    ctx.fillStyle = "#ff3344";
-    ctx.fill();
-    ctx.shadowBlur = 0;
-
-    let dist = Math.hypot(player.x - d.x, player.y - d.y);
-    if (dist < player.r + d.r) {
-      drops.splice(i, 1);
-      score++;
-      document.getElementById("scoreVal").textContent = score;
-      continue;
+    function normalize(value) {
+      return String(value || "").toLowerCase().replace(/ё/g, "е").replace(/\s+/g, " ").trim();
     }
 
-    if (d.y > canvas.height) {
-      drops.splice(i, 1);
-      gameOver();
-      return;
+    function initials(name) {
+      return name.replace(/\(.*?\)/g, "").trim().split(/\s+/).slice(0, 2).map(part => part.charAt(0).toUpperCase()).join("");
     }
-  }
 
-  if (Math.random() < 0.03) spawnDrop();
-  animationId = requestAnimationFrame(updateGame);
-}
+    function cardMarkup(item, type) {
+      const tags = (item.tags || []).map(tag => `<span class="tag">${tag}</span>`).join("");
+      const meta = type === "killer" ? item.alias : item.origin;
+      
+      const counterHtml = (type === "killer" && item.counter) 
+        ? `<details style="margin-top:10px;border-top:1px dashed #333;"><summary style="color:#ffcc00;">Как играть против</summary><p style="color:#ffcc00;border-left-color:#ffcc00;">${item.counter}</p></details>` 
+        : "";
 
-function gameOver() {
-  isPlaying = false;
-  cancelAnimationFrame(animationId);
-  document.getElementById("finalScore").textContent = score;
-  document.getElementById("gameOverScreen").classList.add("active");
-  if (score > highScore) {
-    highScore = score;
-    localStorage.setItem("dbdHighScore", highScore);
+      return `
+        <article class="card">
+          <div class="card-top">
+            <div class="avatar killer-avatar">${initials(item.name)}</div>
+            <div>
+              <h3>${item.name}</h3>
+              <p class="alias">${meta}</p>
+            </div>
+          </div>
+          <div class="tags">${tags}</div>
+          <p class="desc">${item.desc}</p>
+          <details>
+            <summary>Лор</summary>
+            <p>${item.lore}</p>
+          </details>
+          ${counterHtml}
+        </article>
+      `;
+    }
+
+    function renderCards(containerId, countId, items, type) {
+      const container = document.getElementById(containerId);
+      const count = document.getElementById(countId);
+      const query = normalize(document.getElementById("search").value);
+      
+      const filtered = items.filter(function (item) {
+        const haystack = normalize([item.name, item.alias || "", item.origin || "", item.desc, item.lore, (item.tags || []).join(" ")].join(" "));
+        return !query || haystack.includes(query);
+      });
+
+      container.innerHTML = filtered.length ? filtered.map(item => cardMarkup(item, type)).join("") : '<div class="empty" style="text-align:center;color:#666;padding:20px;">Ничего не найдено.</div>';
+      count.textContent = filtered.length + " из " + items.length;
+    }
+
+    function renderAll() {
+      renderCards("killersCards", "killersCount", killers, "killer");
+      renderCards("survivorsCards", "survivorsCount", survivors, "survivor");
+    }
+
+    // Генератор билдов
+    function updateStyles() {
+      const role = document.getElementById("roleSelect").value;
+      const select = document.getElementById("styleSelect");
+      const options = STYLES[role] || [];
+      select.innerHTML = '<option value="">Любой / по описанию</option>' + options.map(style => `<option value="${style}">${style}</option>`).join("");
+    }
+
+    function textHits(text, tag) {
+      const words = SYNONYMS[tag] || [tag];
+      let hits = 0;
+      words.forEach(word => { if (text.includes(normalize(word))) hits += 1; });
+      if (text.includes(normalize(tag))) hits += 2;
+      return hits;
+    }
+
+    function scorePerk(perk, selectedStyle, text) {
+      let score = 0;
+      if (selectedStyle && perk.tags.includes(selectedStyle)) score += 8;
+      perk.tags.forEach(tag => { score += textHits(text, tag) * 3; });
+      return score;
+    }
+
+    function generateBuild() {
+      const role = document.getElementById("roleSelect").value;
+      const selectedStyle = document.getElementById("styleSelect").value;
+      const text = normalize(document.getElementById("styleText").value);
+      const pool = role === "killer" ? killerPerks : survivorPerks;
+      const roleLabel = role === "killer" ? "Маньяк" : "Выживший";
+
+      const scored = pool.map(perk => ({ ...perk, score: scorePerk(perk, selectedStyle, text) }))
+        .sort((a, b) => b.score - a.score || Math.random() - 0.5);
+
+      const chosen = [];
+      const used = new Set();
+
+      scored.forEach(perk => {
+        if (chosen.length < 4 && perk.score > 0 && !used.has(perk.name)) {
+          chosen.push(perk);
+          used.add(perk.name);
+        }
+      });
+      scored.forEach(perk => {
+        if (chosen.length < 4 && !used.has(perk.name)) {
+          chosen.push(perk);
+          used.add(perk.name);
+        }
+      });
+
+      const styleLabel = selectedStyle || "по описанию";
+      const result = document.getElementById("buildResult");
+      result.classList.add("visible");
+
+      const items = chosen.map(perk => `<li><strong>${perk.name}</strong> — ${perk.desc} <br><span style="font-size:11px;color:#777;">[${perk.tags.join(", ")}]</span></li>`).join("");
+      
+      let whyText = [];
+      if (selectedStyle) whyText.push(`выбран стиль «${selectedStyle}»`);
+      if (text) whyText.push(`учтено описание`);
+      if (!selectedStyle && !text) whyText.push(`явный стиль не задан, взята универсальная основа`);
+
+      result.innerHTML = `
+        <h3>Билд для роли: ${roleLabel}</h3>
+        <p style="color:#888;margin:0 0 10px;">Стиль: ${styleLabel}</p>
+        <ul>${items}</ul>
+        <p class="why"><strong>Почему так:</strong> ${whyText.join("; ")}. Перки отсортированы по совпадению с тегами.</p>
+      `;
+    }
+
+    // Мини-игра "Туман"
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    let score = 0;
+    let highScore = localStorage.getItem("dbdHighScore") || 0;
     document.getElementById("highScoreVal").textContent = highScore;
-  }
-}
+    
+    let player = { x: canvas.width / 2, y: canvas.height / 2, r: 15 };
+    let drops = [];
+    let isPlaying = false;
+    let animationId;
 
-function resetGame() {
-  score = 0;
-  drops = [];
-  document.getElementById("scoreVal").textContent = score;
-  document.getElementById("gameOverScreen").classList.remove("active");
-  player.x = canvas.width / 2;
-  player.y = canvas.height / 2;
-  isPlaying = true;
-  updateGame();
-}
+    function spawnDrop() {
+      drops.push({
+        x: Math.random() * (canvas.width - 20) + 10,
+        y: -10,
+        r: 5,
+        speed: 2 + Math.random() * 2
+      });
+    }
 
-canvas.addEventListener("touchmove", (e) => {
-  e.preventDefault();
-  const rect = canvas.getBoundingClientRect();
-  const touch = e.touches[0];
-  player.x = touch.clientX - rect.left;
-  player.y = touch.clientY - rect.top;
-}, { passive: false });
+    function updateGame() {
+      if (!isPlaying) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = "#08080a";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-canvas.addEventListener("mousemove", (e) => {
-  if (e.buttons !== 1) return;
-  const rect = canvas.getBoundingClientRect();
-  player.x = e.clientX - rect.left;
-  player.y = e.clientY - rect.top;
-});
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, player.r, 0, Math.PI * 2);
+      ctx.fillStyle = "#d92b3a";
+      ctx.fill();
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = "#d92b3a";
 
-// Аккаунт
-function checkAuth() {
-  const user = localStorage.getItem("dbdUser");
-  const authStatus = document.getElementById("authStatus");
-  const tabAccount = document.getElementById("tabAccount");
-  const accountContent = document.getElementById("accountContent");
+      for (let i = drops.length - 1; i >= 0; i--) {
+        let d = drops[i];
+        d.y += d.speed;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fillStyle = "#ff3344";
+        ctx.fill();
+        ctx.shadowBlur = 0;
 
-  if (user) {
-    authStatus.textContent = user;
-    tabAccount.style.display = "block";
-    accountContent.innerHTML = `
-      <div class="account-card">
-        <div class="avatar-big">${user[0].toUpperCase()}</div>
-        <h3>${user}</h3>
-        <p style="color:#888;margin-bottom:20px;">Рекорд в тумане: ${highScore}</p>
-        <button class="btn btn-outline" onclick="logout()">Выйти</button>
-      </div>
-    `;
-  } else {
-    authStatus.textContent = "Войти";
-    tabAccount.style.display = "none";
-    accountContent.innerHTML = `
-      <div class="account-card">
-        <h3>Создать профиль</h3>
-        <p style="color:#888;font-size:13px;margin-bottom:20px;">Введите имя, чтобы сохранять прогресс.</p>
-        <div class="input-group">
-          <label>Имя пользователя</label>
-          <input type="text" id="usernameInput" placeholder="Например: MegThomas">
-        </div>
-        <button class="btn" onclick="login()">Войти</button>
-      </div>
-    `;
-  }
-}
+        let dist = Math.hypot(player.x - d.x, player.y - d.y);
+        if (dist < player.r + d.r) {
+          drops.splice(i, 1);
+          score++;
+          document.getElementById("scoreVal").textContent = score;
+          continue;
+        }
 
-function login() {
-  const input = document.getElementById("usernameInput");
-  if (input && input.value.trim()) {
-    localStorage.setItem("dbdUser", input.value.trim());
+        if (d.y > canvas.height) {
+          drops.splice(i, 1);
+          gameOver();
+          return;
+        }
+      }
+
+      if (Math.random() < 0.03) spawnDrop();
+      animationId = requestAnimationFrame(updateGame);
+    }
+
+    function gameOver() {
+      isPlaying = false;
+      cancelAnimationFrame(animationId);
+      document.getElementById("finalScore").textContent = score;
+      document.getElementById("gameOverScreen").classList.add("active");
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("dbdHighScore", highScore);
+        document.getElementById("highScoreVal").textContent = highScore;
+      }
+    }
+
+    function resetGame() {
+      score = 0;
+      drops = [];
+      document.getElementById("scoreVal").textContent = score;
+      document.getElementById("gameOverScreen").classList.remove("active");
+      player.x = canvas.width / 2;
+      player.y = canvas.height / 2;
+      isPlaying = true;
+      updateGame();
+    }
+
+    canvas.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      player.x = touch.clientX - rect.left;
+      player.y = touch.clientY - rect.top;
+    }, { passive: false });
+
+    canvas.addEventListener("mousemove", (e) => {
+      if (e.buttons !== 1) return;
+      const rect = canvas.getBoundingClientRect();
+      player.x = e.clientX - rect.left;
+      player.y = e.clientY - rect.top;
+    });
+
+    // Аккаунт
+    function checkAuth() {
+      const user = localStorage.getItem("dbdUser");
+      const authStatus = document.getElementById("authStatus");
+      const tabAccount = document.getElementById("tabAccount");
+      const accountContent = document.getElementById("accountContent");
+
+      if (user) {
+        authStatus.textContent = user;
+        tabAccount.style.display = "block";
+        accountContent.innerHTML = `
+          <div class="account-card">
+            <div class="avatar-big">${user[0].toUpperCase()}</div>
+            <h3>${user}</h3>
+            <p style="color:#888;margin-bottom:20px;">Рекорд в тумане: ${highScore}</p>
+            <button class="btn btn-outline" onclick="logout()">Выйти</button>
+          </div>
+        `;
+      } else {
+        authStatus.textContent = "Войти";
+        tabAccount.style.display = "none";
+        accountContent.innerHTML = `
+          <div class="account-card">
+            <h3>Создать профиль</h3>
+            <p style="color:#888;font-size:13px;margin-bottom:20px;">Введите имя, чтобы сохранять прогресс.</p>
+            <div class="input-group">
+              <label>Имя пользователя</label>
+              <input type="text" id="usernameInput" placeholder="Например: MegThomas">
+            </div>
+            <button class="btn" onclick="login()">Войти</button>
+          </div>
+        `;
+      }
+    }
+
+    function login() {
+      const input = document.getElementById("usernameInput");
+      if (input && input.value.trim()) {
+        localStorage.setItem("dbdUser", input.value.trim());
+        checkAuth();
+        document.querySelector('[data-tab="account"]').click();
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("dbdUser");
+      checkAuth();
+      document.querySelector('[data-tab="killers"]').click();
+    }
+
+    document.getElementById("authStatus").addEventListener("click", () => {
+      document.querySelector('[data-tab="account"]').click();
+    });
+
+    // Инициализация при загрузке
+    document.querySelectorAll(".tab-btn").forEach(button => {
+      button.addEventListener("click", function () {
+        document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+        document.querySelectorAll(".tab-panel").forEach(panel => panel.classList.remove("active"));
+        button.classList.add("active");
+        document.getElementById(button.dataset.tab).classList.add("active");
+      });
+    });
+
+    document.getElementById("search").addEventListener("input", renderAll);
+    document.getElementById("roleSelect").addEventListener("change", updateStyles);
+    document.getElementById("generateBtn").addEventListener("click", generateBuild);
+
+    updateStyles();
+    renderAll();
     checkAuth();
-    document.querySelector('[data-tab="account"]').click();
-  }
-}
-
-function logout() {
-  localStorage.removeItem("dbdUser");
-  checkAuth();
-  document.querySelector('[data-tab="killers"]').click();
-}
-
-document.getElementById("authStatus").addEventListener("click", () => {
-  document.querySelector('[data-tab="account"]').click();
-});
-
-// Инициализация при загрузке
-document.querySelectorAll(".tab-btn").forEach(button => {
-  button.addEventListener("click", function
+  </script>
+</body>
+</html>
