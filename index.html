@@ -74,7 +74,7 @@
     .result h3 { margin: 0 0 10px; font-size: 16px; color: var(--accent2); }
     .result ul { margin: 0 0 16px; padding-left: 0; list-style: none; }
     .result li { margin: 8px 0; font-size: 14px; line-height: 1.4; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border-left: 2px solid var(--accent); }
-    
+
     .game-container { display: flex; flex-direction: column; align-items: center; padding: 20px; }
     .progress-bg { width: 100%; max-width: 300px; height: 15px; background: #222; border-radius: 10px; margin-bottom: 20px; overflow: hidden; border: 1px solid #333; }
     .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #8c0e1a, #d92b3a); transition: width 0.1s; }
@@ -142,10 +142,20 @@
       
       <div class="builder" style="margin-bottom: 20px;">
         <h3 style="margin-top:0; text-align:center;">Создать свой билд</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-          <select id="customRole"><option value="Выживший">Выживший</option><option value="Убийца">Убийца</option></select>
-          <input type="text" id="customName" placeholder="Название билда">
-        </div>
+        
+        <label class="field">
+          <span>Роль</span>
+          <select id="customRole" onchange="updateCustomPerkList()">
+            <option value="survivor">Выживший</option>
+            <option value="killer">Убийца</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Название билда</span>
+          <input type="text" id="customName" placeholder="Например: Скоростной ремонт">
+        </label>
+
         <p style="font-size:12px; color:#888; margin-bottom:5px;">Выберите 4 перка:</p>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
           <select id="perk1"></select>
@@ -488,15 +498,16 @@ const killerPerks = [
     // ==========================================
     // РУЧНОЕ СОЗДАНИЕ БИЛДОВ
     // ==========================================
-    function populatePerkSelects() {
+    function updateCustomPerkList() {
+      const role = document.getElementById("customRole").value;
       const p1 = document.getElementById("perk1");
       const p2 = document.getElementById("perk2");
       const p3 = document.getElementById("perk3");
       const p4 = document.getElementById("perk4");
       if(!p1) return;
       
-      const allPerks = [...survivorPerks, ...killerPerks].map(p => p.name).sort();
-      const options = '<option value="">Выбрать перк...</option>' + allPerks.map(name => `<option value="${name}">${name}</option>`).join("");
+      const pool = role === "killer" ? killerPerks : survivorPerks;
+      const options = '<option value="">Выбрать перк...</option>' + pool.map(p => `<option value="${p.name}">${p.name}</option>`).join("");
       
       p1.innerHTML = options;
       p2.innerHTML = options;
@@ -509,7 +520,7 @@ const killerPerks = [
       if (!user) return alert("Войдите в профиль, чтобы публиковать билды!");
 
       const name = document.getElementById("customName").value.trim() || "Билд без названия";
-      const role = document.getElementById("customRole").value;
+      const role = document.getElementById("customRole").value === "killer" ? "Убийца" : "Выживший";
       const perks = [
         document.getElementById("perk1").value,
         document.getElementById("perk2").value,
@@ -603,7 +614,6 @@ const killerPerks = [
     function startRepair(e) {
       if (e) e.preventDefault();
       
-      // Если генератор починен, кнопка работает как перезапуск
       if (repairProgress >= 100) {
         repairProgress = 0;
         updateProgress();
@@ -748,7 +758,6 @@ const killerPerks = [
       }
     }
 
-    // Обработчики кнопок игры
     repairBtn.addEventListener("mousedown", startRepair);
     repairBtn.addEventListener("touchstart", startRepair, {passive: false});
     document.addEventListener("mouseup", () => { if(isRepairing) stopRepair(); });
@@ -853,7 +862,7 @@ const killerPerks = [
     renderAll();
     checkAuth();
     renderCommunity();
-    populatePerkSelects();
+    updateCustomPerkList();
   </script>
 </body>
 </html>
