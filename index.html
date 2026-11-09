@@ -44,17 +44,10 @@
     .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent2), transparent); opacity: 0.4; }
     .card-top { display: flex; gap: 12px; align-items: flex-start; }
     
-    /* Стили для картинок */
-    .avatar {
-      width: 60px; height: 60px; border-radius: 8px; flex: 0 0 auto;
-      display: grid; place-items: center; background: #222; border: 2px solid #333;
-      color: var(--text); font-weight: 900; font-size: 18px;
-      background-size: cover; background-position: center top; background-repeat: no-repeat;
-      position: relative;
-    }
-    .killer-avatar { border-color: rgba(217,43,58,0.6); }
-    .avatar span { position: absolute; z-index: 0; opacity: 0.3; font-size: 20px; }
-
+    /* Новый стиль для картинок персонажей */
+    .avatar { width: 56px; height: 56px; border-radius: 8px; flex: 0 0 auto; border: 1px solid rgba(217,43,58,0.4); box-shadow: 0 0 10px rgba(0,0,0,0.5); background: #000; overflow: hidden; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    
     .card h3 { margin: 0; font-size: 16px; line-height: 1.2; }
     .alias { margin: 4px 0 0; color: var(--accent2); font-size: 12px; font-weight: 600; }
     .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
@@ -384,38 +377,26 @@ const killerPerks = [
       return String(value || "").toLowerCase().replace(/ё/g, "е").replace(/\s+/g, " ").trim();
     }
 
-    function initials(name) {
-      return name.replace(/\(.*?\)/g, "").trim().split(/\s+/).slice(0, 2).map(part => part.charAt(0).toUpperCase()).join("");
-    }
-
+    // Функция для отрисовки карточки с картинкой
     function cardMarkup(item, type) {
       const tags = (item.tags || []).map(tag => `<span class="tag">${tag}</span>`).join("");
       const meta = type === "killer" ? item.alias : item.origin;
-      
-      let imgName = item.name.split('(')[0].trim().replace(/ /g, '_');
-      if (type === "killer") {
-         const match = item.name.match(/\((.*?)\)/);
-         if (match) imgName = match[1].replace(/ /g, '_') + '_Portrait';
-      } else {
-         imgName = item.name.replace(/ /g, '_');
-      }
-      
-      const imgUrl = `https://deadbydaylight.fandom.com/wiki/Special:FilePath/${imgName}.png`;
-
       const counterHtml = (type === "killer" && item.counter) 
         ? `<details style="margin-top:10px;border-top:1px dashed #333;"><summary style="color:#ffcc00;">Как играть против</summary><p style="color:#ffcc00;border-left-color:#ffcc00;">${item.counter}</p></details>` 
         : "";
 
+      // Очищаем имя от английского перевода для поиска картинки
+      const cleanName = item.name.split('(')[0].trim();
+      const imgUrl = `https://raw.githubusercontent.com/MakotoSakamoto/DBD-API-Data/master/src/data/characters/icons/${encodeURIComponent(cleanName)}.png`;
+      const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23141419'/><text x='50' y='55' font-size='40' text-anchor='middle' fill='%238c0e1a'>?</text></svg>";
+
       return `
         <article class="card">
           <div class="card-top">
-            <div class="avatar killer-avatar" style="background-image: url('${imgUrl}');">
-              <span>${initials(item.name)}</span>
+            <div class="avatar">
+              <img src="${imgUrl}" onerror="this.src='${fallbackImg}'" alt="${cleanName}">
             </div>
-            <div style="flex:1;">
-              <h3>${item.name}</h3>
-              <p class="alias">${meta}</p>
-            </div>
+            <div><h3>${item.name}</h3><p class="alias">${meta}</p></div>
           </div>
           <div class="tags">${tags}</div>
           <p class="desc">${item.desc}</p>
@@ -883,7 +864,7 @@ const killerPerks = [
     document.getElementById("roleSelect").addEventListener("change", updateStyles);
     document.getElementById("generateBtn").addEventListener("click", generateBuild);
 
-    // Инициализация
+    // Инициализация при загрузке
     updateStyles();
     renderAll();
     checkAuth();
