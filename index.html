@@ -72,13 +72,9 @@
     
     /* Стили для игры */
     .game-container { display: flex; flex-direction: column; align-items: center; padding: 20px; }
-    .progress-bg { width: 100%; height: 20px; background: #222; border-radius: 10px; margin-bottom: 20px; overflow: hidden; border: 1px solid #333; }
+    .progress-bg { width: 100%; max-width: 300px; height: 15px; background: #222; border-radius: 10px; margin-bottom: 20px; overflow: hidden; border: 1px solid #333; }
     .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #8c0e1a, #d92b3a); transition: width 0.1s; }
     .game-status { font-weight: bold; margin-bottom: 20px; color: #ffcc00; height: 20px; }
-    .skill-circle { position: relative; width: 150px; height: 150px; margin-bottom: 20px; display: none; }
-    .skill-svg { transform: rotate(-90deg); }
-    .skill-zone { stroke: #7bd88f; stroke-width: 10; fill: none; }
-    .skill-pointer { stroke: #fff; stroke-width: 4; transform-origin: 75px 75px; }
     .skill-btn { background: #7bd88f; color: #000; box-shadow: 0 6px 20px rgba(123,216,143,0.4); display: none; }
     .repair-btn { user-select: none; -webkit-user-select: none; }
   </style>
@@ -116,16 +112,18 @@
     <section id="game" class="tab-panel">
       <div class="panel-head"><h2>Ремонт генератора</h2></div>
       <div class="game-container">
-        <p style="color: #8a8a99; font-size: 14px; margin-bottom: 20px; text-align: center;">Зажми кнопку, чтобы чинить генератор. Когда появится круг — успей нажать «ПРОВЕРКА» в зеленой зоне!</p>
-        <div class="progress-bg"><div id="progressBar" class="progress-bar"></div></div>
-        <div id="gameStatus" class="game-status">Генератор в норме</div>
-        <div id="skillCheckContainer" class="skill-circle">
-          <svg width="150" height="150" class="skill-svg">
-            <circle cx="75" cy="75" r="60" stroke="#333" stroke-width="10" fill="none" />
-            <circle id="skillCheckZone" cx="75" cy="75" r="60" class="skill-zone" stroke-dasharray="377" stroke-dashoffset="0" />
-            <line id="skillCheckPointer" x1="75" y1="15" x2="75" y2="30" class="skill-pointer" />
-          </svg>
+        <p style="color: #8a8a99; font-size: 14px; margin-bottom: 20px; text-align: center;">Зажми кнопку, чтобы чинить генератор. Когда появится круг — жми на «ПРОВЕРКА»!</p>
+        
+        <div style="display: flex; justify-content: space-between; width: 100%; max-width: 300px; margin-bottom: 10px; font-weight: bold; font-size: 12px;">
+          <span>ПРОГРЕСС: <span id="progressVal">0%</span></span>
+          <span id="gameStatus" style="color: #ffcc00;">В норме</span>
         </div>
+
+        <div class="progress-bg"><div id="progressBar" class="progress-bar"></div></div>
+
+        <!-- Канвас для отрисовки скилл-чека -->
+        <canvas id="skillCheckCanvas" width="200" height="200" style="display: none; margin-bottom: 20px;"></canvas>
+
         <button id="repairBtn" class="btn repair-btn" style="max-width: 250px;">Зажать для ремонта</button>
         <button id="skillCheckBtn" class="btn skill-btn" style="max-width: 250px;">ПРОВЕРКА!</button>
       </div>
@@ -436,7 +434,7 @@ const killerPerks = [
     }
 
     // ==========================================
-    // НОВАЯ ИГРА: РЕМОНТ ГЕНЕРАТОРА
+    // НОВАЯ ИГРА: РЕМОНТ ГЕНЕРАТОРА (на Canvas)
     // ==========================================
     let repairProgress = 0;
     let isRepairing = false;
@@ -444,23 +442,30 @@ const killerPerks = [
     let skillCheckTimeout;
     let isSkillCheckActive = false;
     let skillCheckAnimation;
+    
+    const canvas = document.getElementById("skillCheckCanvas");
+    const ctx = canvas.getContext("2d");
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = 70;
+    
     let pointerAngle = 0;
     let zoneStart = 0;
     let zoneSize = 0;
     let skillCheckSpeed = 0;
-
+    
     const progressBar = document.getElementById("progressBar");
+    const progressVal = document.getElementById("progressVal");
     const repairBtn = document.getElementById("repairBtn");
-    const skillCheckContainer = document.getElementById("skillCheckContainer");
     const skillCheckBtn = document.getElementById("skillCheckBtn");
-    const skillCheckPointer = document.getElementById("skillCheckPointer");
-    const skillCheckZone = document.getElementById("skillCheckZone");
     const gameStatus = document.getElementById("gameStatus");
 
     function updateProgress() {
       progressBar.style.width = repairProgress + "%";
+      progressVal.textContent = Math.floor(repairProgress) + "%";
+      
       if (repairProgress >= 100) {
-        gameStatus.textContent = "Генератор починен!";
+        gameStatus.textContent = "Починен!";
         gameStatus.style.color = "#7bd88f";
         stopRepair();
         repairBtn.textContent = "Начать заново";
@@ -471,23 +476,23 @@ const killerPerks = [
     function startRepair(e) {
       if (e) e.preventDefault();
       if (isSkillCheckActive || repairProgress >= 100) return;
+      
       isRepairing = true;
-      gameStatus.textContent = "Ремонтируем...";
+      gameStatus.textContent = "Ремонт...";
       gameStatus.style.color = "#7bd88f";
       
       clearInterval(gameLoop);
       gameLoop = setInterval(() => {
         if (isRepairing && !isSkillCheckActive && repairProgress < 100) {
-          repairProgress += 0.4; // Медленнее ремонт
+          repairProgress += 0.8;
           updateProgress();
         }
-      }, 50);
+      }, 100);
 
-      // Таймер на появление проверки
       clearTimeout(skillCheckTimeout);
       skillCheckTimeout = setTimeout(() => {
         if (isRepairing && !isSkillCheckActive && repairProgress < 100) triggerSkillCheck();
-      }, 3000 + Math.random() * 3000);
+      }, 4000 + Math.random() * 4000);
     }
 
     function stopRepair() {
@@ -496,40 +501,68 @@ const killerPerks = [
       clearTimeout(skillCheckTimeout);
     }
 
+    function drawSkillCheck() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = "#444";
+      ctx.lineWidth = 10;
+      ctx.stroke();
+
+      const startRad = (zoneStart - 90) * Math.PI / 180;
+      const endRad = (zoneStart + zoneSize - 90) * Math.PI / 180;
+      
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, startRad, endRad);
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 10;
+      ctx.stroke();
+
+      const pointerRad = (pointerAngle - 90) * Math.PI / 180;
+      const tipX = centerX + (radius + 15) * Math.cos(pointerRad);
+      const tipY = centerY + (radius + 15) * Math.sin(pointerRad);
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(tipX, tipY);
+      ctx.strokeStyle = "#ff3344";
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(tipX, tipY, 5, 0, Math.PI * 2);
+      ctx.fillStyle = "#ff3344";
+      ctx.fill();
+    }
+
     function triggerSkillCheck() {
       isSkillCheckActive = true;
       stopRepair();
-      skillCheckContainer.style.display = "block";
+      canvas.style.display = "block";
       repairBtn.style.display = "none";
       skillCheckBtn.style.display = "block";
-      gameStatus.textContent = "ПРОВЕРКА РЕАКЦИИ!";
+      gameStatus.textContent = "ПРОВЕРКА!";
       gameStatus.style.color = "#ff3344";
 
-      // Генерируем зону успеха (от 20 до 40 градусов)
-      zoneSize = 20 + Math.random() * 20;
+      zoneSize = 30 + Math.random() * 30;
       zoneStart = Math.random() * (360 - zoneSize);
       
-      const circumference = 2 * Math.PI * 60;
-      const offset = circumference - (zoneSize / 360) * circumference;
-      skillCheckZone.style.strokeDasharray = `${circumference - offset} ${offset}`;
-      skillCheckZone.style.transform = `rotate(${zoneStart}deg)`;
-
       pointerAngle = 0;
-      skillCheckSpeed = 1.5 + Math.random() * 1.5; // Скорость вращения
+      skillCheckSpeed = 2 + Math.random() * 2;
       
-      function animatePointer() {
+      function animate() {
         if (!isSkillCheckActive) return;
         pointerAngle += skillCheckSpeed;
         if (pointerAngle >= 360) pointerAngle -= 360;
-        skillCheckPointer.style.transform = `rotate(${pointerAngle}deg)`;
-        skillCheckAnimation = requestAnimationFrame(animatePointer);
+        drawSkillCheck();
+        skillCheckAnimation = requestAnimationFrame(animate);
       }
-      animatePointer();
+      animate();
 
-      // Если игрок не нажал за 3 секунды, проверка проваливается
       skillCheckTimeout = setTimeout(() => {
         if (isSkillCheckActive) resolveSkillCheck(true);
-      }, 3000);
+      }, 2500);
     }
 
     function resolveSkillCheck(missed = false) {
@@ -538,7 +571,7 @@ const killerPerks = [
       cancelAnimationFrame(skillCheckAnimation);
       clearTimeout(skillCheckTimeout);
       
-      skillCheckContainer.style.display = "none";
+      canvas.style.display = "none";
       skillCheckBtn.style.display = "none";
       repairBtn.style.display = "block";
 
@@ -547,20 +580,20 @@ const killerPerks = [
       
       if (!missed) {
         if (zoneStart + zoneSize <= 360) {
-          isSuccess = currentAngle >= zoneStart && currentAngle <= zoneStart + zoneSize;
+          isSuccess = currentAngle >= zoneStart && currentAngle <= (zoneStart + zoneSize);
         } else {
           isSuccess = currentAngle >= zoneStart || currentAngle <= (zoneStart + zoneSize) - 360;
         }
       }
 
       if (isSuccess) {
-        gameStatus.textContent = "Идеально!";
+        gameStatus.textContent = "Успех!";
         gameStatus.style.color = "#7bd88f";
-        repairProgress += 10;
+        repairProgress += 15;
       } else {
-        gameStatus.textContent = "Генератор взорвался!";
+        gameStatus.textContent = "Взрыв!";
         gameStatus.style.color = "#ff3344";
-        repairProgress -= 5;
+        repairProgress -= 10;
         if (repairProgress < 0) repairProgress = 0;
         document.body.style.background = "#3a0a0a";
         setTimeout(() => document.body.style.background = "", 150);
@@ -570,13 +603,12 @@ const killerPerks = [
       
       if (repairProgress < 100) {
         setTimeout(() => {
-          gameStatus.textContent = "Генератор в норме";
+          gameStatus.textContent = "В норме";
           gameStatus.style.color = "#ffcc00";
         }, 1500);
       }
     }
 
-    // Управление кнопками
     repairBtn.addEventListener("mousedown", startRepair);
     repairBtn.addEventListener("touchstart", startRepair, {passive: false});
     document.addEventListener("mouseup", () => { if(isRepairing) stopRepair(); });
@@ -590,7 +622,7 @@ const killerPerks = [
         repairProgress = 0;
         updateProgress();
         repairBtn.textContent = "Зажать для ремонта";
-        gameStatus.textContent = "Генератор в норме";
+        gameStatus.textContent = "В норме";
         gameStatus.style.color = "#ffcc00";
       }
     });
