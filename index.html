@@ -22,7 +22,6 @@
     .tab-btn { flex: 1 0 auto; border: 1px solid var(--line); background: rgba(255,255,255,0.02); color: var(--muted); border-radius: 8px; padding: 9px 12px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: 0.2s; }
     .tab-btn.active { color: #fff; background: linear-gradient(180deg, var(--accent2), var(--accent)); border-color: var(--blood); box-shadow: 0 4px 12px rgba(140,14,26,0.3); }
     
-    /* Адаптивность для ПК */
     @media (min-width: 768px) {
       header { padding: 16px 24px; }
       .brand h1 { font-size: 22px; }
@@ -75,9 +74,7 @@
     .result h3 { margin: 0 0 10px; font-size: 16px; color: var(--accent2); }
     .result ul { margin: 0 0 16px; padding-left: 0; list-style: none; }
     .result li { margin: 8px 0; font-size: 14px; line-height: 1.4; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border-left: 2px solid var(--accent); }
-    .result .why { font-size: 13px; color: #aaa; line-height: 1.5; margin-bottom: 0; }
-
-    /* Стили для игры */
+    
     .game-container { display: flex; flex-direction: column; align-items: center; padding: 20px; }
     .progress-bg { width: 100%; max-width: 300px; height: 15px; background: #222; border-radius: 10px; margin-bottom: 20px; overflow: hidden; border: 1px solid #333; }
     .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #8c0e1a, #d92b3a); transition: width 0.1s; }
@@ -141,7 +138,24 @@
     </section>
 
     <section id="community" class="tab-panel">
-      <div class="panel-head"><h2>Билды сообщества</h2></div>
+      <div class="panel-head"><h2>Сборка</h2></div>
+      
+      <div class="builder" style="margin-bottom: 20px;">
+        <h3 style="margin-top:0; text-align:center;">Создать свой билд</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+          <select id="customRole"><option value="Выживший">Выживший</option><option value="Убийца">Убийца</option></select>
+          <input type="text" id="customName" placeholder="Название билда">
+        </div>
+        <p style="font-size:12px; color:#888; margin-bottom:5px;">Выберите 4 перка:</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+          <select id="perk1"></select>
+          <select id="perk2"></select>
+          <select id="perk3"></select>
+          <select id="perk4"></select>
+        </div>
+        <button class="btn" onclick="saveCustomBuild()">Опубликовать</button>
+      </div>
+
       <div id="communityBuilds" class="cards"></div>
     </section>
 
@@ -462,7 +476,7 @@ const killerPerks = [
       pubBuilds.unshift({
         author: user,
         role: lastBuild.role,
-        style: lastBuild.style,
+        name: "Билд от ИИ (" + lastBuild.style + ")",
         perks: lastBuild.perks.map(p => p.name)
       });
       localStorage.setItem("dbdPublicBuilds", JSON.stringify(pubBuilds));
@@ -471,12 +485,57 @@ const killerPerks = [
       document.querySelector('[data-tab="community"]').click();
     }
 
+    // ==========================================
+    // РУЧНОЕ СОЗДАНИЕ БИЛДОВ
+    // ==========================================
+    function populatePerkSelects() {
+      const p1 = document.getElementById("perk1");
+      const p2 = document.getElementById("perk2");
+      const p3 = document.getElementById("perk3");
+      const p4 = document.getElementById("perk4");
+      if(!p1) return;
+      
+      const allPerks = [...survivorPerks, ...killerPerks].map(p => p.name).sort();
+      const options = '<option value="">Выбрать перк...</option>' + allPerks.map(name => `<option value="${name}">${name}</option>`).join("");
+      
+      p1.innerHTML = options;
+      p2.innerHTML = options;
+      p3.innerHTML = options;
+      p4.innerHTML = options;
+    }
+
+    function saveCustomBuild() {
+      const user = localStorage.getItem("dbdUser");
+      if (!user) return alert("Войдите в профиль, чтобы публиковать билды!");
+
+      const name = document.getElementById("customName").value.trim() || "Билд без названия";
+      const role = document.getElementById("customRole").value;
+      const perks = [
+        document.getElementById("perk1").value,
+        document.getElementById("perk2").value,
+        document.getElementById("perk3").value,
+        document.getElementById("perk4").value
+      ].filter(p => p !== "");
+
+      if (perks.length < 4) return alert("Выберите все 4 перка!");
+
+      let pubBuilds = JSON.parse(localStorage.getItem("dbdPublicBuilds") || "[]");
+      pubBuilds.unshift({ author: user, role: role, name: name, perks: perks });
+      localStorage.setItem("dbdPublicBuilds", JSON.stringify(pubBuilds));
+      
+      alert("Билд опубликован в сборку!");
+      document.getElementById("customName").value = "";
+      renderCommunity();
+    }
+
     function renderCommunity() {
       const container = document.getElementById("communityBuilds");
+      if (!container) return;
+
       const pubBuilds = JSON.parse(localStorage.getItem("dbdPublicBuilds") || "[]");
       
       if (pubBuilds.length === 0) {
-        container.innerHTML = '<p style="color:#666; text-align:center;">Пока нет публичных билдов. Создайте первый!</p>';
+        container.innerHTML = '<p style="color:#666; text-align:center; grid-column: 1 / -1;">Пока нет публичных билдов. Создайте первый!</p>';
         return;
       }
 
@@ -486,7 +545,7 @@ const killerPerks = [
             <h3 style="margin:0; color:var(--accent2);">${b.author}</h3>
             <span class="tag" style="background:var(--accent); color:#fff;">${b.role}</span>
           </div>
-          <p class="desc" style="margin-top:10px;"><strong>Стиль:</strong> ${b.style}</p>
+          <p class="desc" style="margin-top:10px; font-size:16px; color:#fff;"><strong>${b.name}</strong></p>
           <ul style="padding-left:20px; font-size:13px; color:#ccc; margin-bottom:0;">
             ${b.perks.map(p => `<li>${p}</li>`).join("")}
           </ul>
@@ -495,7 +554,7 @@ const killerPerks = [
     }
 
     // ==========================================
-    // ИГРА: РЕМОНТ ГЕНЕРАТОРА (на Canvas)
+    // ИГРА: РЕМОНТ ГЕНЕРАТОРА
     // ==========================================
     let repairProgress = 0;
     let isRepairing = false;
@@ -532,7 +591,6 @@ const killerPerks = [
         repairBtn.textContent = "Начать заново";
         repairBtn.style.background = "linear-gradient(180deg, #7bd88f, #4caf50)";
         
-        // Сохранение статистики
         let user = localStorage.getItem("dbdUser");
         if (user) {
            let stats = JSON.parse(localStorage.getItem("dbdStats_" + user) || '{"gens":0}');
@@ -544,7 +602,19 @@ const killerPerks = [
 
     function startRepair(e) {
       if (e) e.preventDefault();
-      if (isSkillCheckActive || repairProgress >= 100) return;
+      
+      // Если генератор починен, кнопка работает как перезапуск
+      if (repairProgress >= 100) {
+        repairProgress = 0;
+        updateProgress();
+        repairBtn.textContent = "Зажать для ремонта";
+        repairBtn.style.background = "linear-gradient(180deg, var(--accent2), var(--accent))";
+        gameStatus.textContent = "В норме";
+        gameStatus.style.color = "#ffcc00";
+        return;
+      }
+
+      if (isSkillCheckActive) return;
       
       isRepairing = true;
       gameStatus.textContent = "Ремонт...";
@@ -678,6 +748,7 @@ const killerPerks = [
       }
     }
 
+    // Обработчики кнопок игры
     repairBtn.addEventListener("mousedown", startRepair);
     repairBtn.addEventListener("touchstart", startRepair, {passive: false});
     document.addEventListener("mouseup", () => { if(isRepairing) stopRepair(); });
@@ -686,18 +757,10 @@ const killerPerks = [
     skillCheckBtn.addEventListener("mousedown", () => resolveSkillCheck());
     skillCheckBtn.addEventListener("touchstart", (e) => { e.preventDefault(); resolveSkillCheck(); }, {passive: false});
 
-    repairBtn.addEventListener("click", () => {
-      if (repairProgress >= 100) {
-        repairProgress = 0;
-        updateProgress();
-        repairBtn.textContent = "Зажать для ремонта";
-        repairBtn.style.background = "linear-gradient(180deg, var(--accent2), var(--accent))";
-        gameStatus.textContent = "В норме";
-        gameStatus.style.color = "#ffcc00";
-      }
-    });
 
-    // Аккаунт с паролем
+    // ==========================================
+    // АККАУНТ
+    // ==========================================
     function checkAuth() {
       const user = localStorage.getItem("dbdUser");
       const authStatus = document.getElementById("authStatus");
@@ -748,7 +811,6 @@ const killerPerks = [
         const user = inputUser.value.trim();
         const pass = inputPass.value.trim();
         
-        // Простейшая проверка пароля
         let savedPass = localStorage.getItem("dbdPass_" + user);
         if (savedPass && savedPass !== pass) {
           return alert("Неверный пароль для этого пользователя!");
@@ -786,10 +848,12 @@ const killerPerks = [
     document.getElementById("roleSelect").addEventListener("change", updateStyles);
     document.getElementById("generateBtn").addEventListener("click", generateBuild);
 
+    // Инициализация при загрузке
     updateStyles();
     renderAll();
     checkAuth();
     renderCommunity();
+    populatePerkSelects();
   </script>
 </body>
 </html>
