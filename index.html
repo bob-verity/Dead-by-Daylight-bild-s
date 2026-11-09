@@ -60,9 +60,6 @@
     .result li { margin: 8px 0; font-size: 14px; line-height: 1.4; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border-left: 2px solid var(--accent); }
     .result .why { font-size: 13px; color: #aaa; line-height: 1.5; margin-bottom: 0; }
     .note { margin-top: 16px; font-size: 11px; line-height: 1.5; color: var(--muted); text-align: center; }
-    .whisper-container { background: #000; border: 1px solid var(--accent); border-radius: 16px; padding: 30px 20px; min-height: 300px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-    .whisper-box { background: rgba(255,255,255,0.03); border-left: 3px solid var(--accent2); padding: 20px; border-radius: 8px; width: 100%; text-align: center; min-height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
-    .whisper-text { font-style: italic; color: #e8e6ea; font-size: 16px; line-height: 1.6; margin: 0; }
     .account-card { background: var(--card); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--line); }
     .avatar-big { width: 80px; height: 80px; border-radius: 50%; background: var(--accent); margin: 0 auto 15px; display: grid; place-items: center; font-size: 32px; font-weight: bold; border: 2px solid var(--blood); }
     .btn-outline { background: transparent; border: 1px solid var(--accent2); color: var(--accent2); }
@@ -87,7 +84,7 @@
       <button class="tab-btn active" data-tab="killers">Убийцы</button>
       <button class="tab-btn" data-tab="survivors">Выжившие</button>
       <button class="tab-btn" data-tab="builder">Билды</button>
-      <button class="tab-btn" data-tab="game">Шепоты</button>
+      <button class="tab-btn" data-tab="game">Генератор</button>
       <button class="tab-btn" data-tab="account" id="tabAccount" style="display:none;">Профиль</button>
     </nav>
   </header>
@@ -106,11 +103,22 @@
       </div>
     </section>
     <section id="game" class="tab-panel">
-      <div class="panel-head"><h2>Шепоты Сущности</h2></div>
-      <div class="whisper-container">
-        <p style="color: #8a8a99; font-size: 14px; margin-bottom: 20px; text-align: center;">Нажми на кнопку, чтобы услышать то, что туман хочет тебе сказать.</p>
-        <div class="whisper-box"><p id="whisperText" class="whisper-text">...туман молчит...</p></div>
-        <button id="whisperBtn" class="btn" style="max-width: 250px;">Услышать шепот</button>
+      <div class="panel-head"><h2>Ремонт генератора</h2></div>
+      <div class="game-container" style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
+        <p style="color: #8a8a99; font-size: 14px; margin-bottom: 10px; text-align: center;">Зажми кнопку, чтобы чинить генератор. Отпускай палец в зеленой зоне!</p>
+        <div id="progressBarBg" style="width: 100%; height: 20px; background: #222; border-radius: 10px; margin-bottom: 20px; overflow: hidden; border: 1px solid #333;">
+          <div id="progressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #8c0e1a, #d92b3a); transition: width 0.1s;"></div>
+        </div>
+        <div id="gameStatus" style="font-weight: bold; margin-bottom: 20px; color: #ffcc00; height: 20px;">Генератор в норме</div>
+        <div id="skillCheckContainer" style="position: relative; width: 150px; height: 150px; margin-bottom: 20px; display: none;">
+          <svg width="150" height="150" style="transform: rotate(-90deg);">
+            <circle cx="75" cy="75" r="60" stroke="#333" stroke-width="10" fill="none" />
+            <circle id="skillCheckZone" cx="75" cy="75" r="60" stroke="#7bd88f" stroke-width="10" fill="none" stroke-dasharray="377" stroke-dashoffset="0" />
+            <line id="skillCheckPointer" x1="75" y1="15" x2="75" y2="30" stroke="#fff" stroke-width="4" style="transform-origin: 75px 75px;" />
+          </svg>
+        </div>
+        <button id="repairBtn" class="btn" style="max-width: 250px; user-select: none; -webkit-user-select: none;">Зажать для ремонта</button>
+        <button id="skillCheckBtn" class="btn" style="max-width: 250px; display: none; background: #7bd88f; color: #000; box-shadow: 0 6px 20px rgba(123,216,143,0.4);">ПРОВЕРКА!</button>
       </div>
     </section>
     <section id="account" class="tab-panel"><div class="panel-head"><h2>Профиль</h2></div><div id="accountContent"></div></section>
@@ -282,8 +290,7 @@ const killerPerks = [
   { name: "Dark Devotion", tags: ["Стелс", "Информация"], desc: "Переносит террор на обсессию после удара." },
   { name: "Floods of Rage", tags: ["Информация"], desc: "Раскрывает выживших после снятия с особого крюка." },
   { name: "Thrilling Tremors", tags: ["Информация", "Контроль генераторов"], desc: "Блокирует генераторы и раскрывает выживших после повешения." }
-];
-    const STYLES = {
+];    const STYLES = {
       survivor: ["Генераторы", "Лечение", "Поддержка", "Стелс", "Луп", "Информация", "Анти-туннель", "Выживание", "Тотемы", "Соло", "Endgame"],
       killer: ["Давление", "Стелс", "Погоня", "Контроль генераторов", "Анти-луп", "Мобильность", "Информация", "Endgame"]
     };
@@ -326,7 +333,6 @@ const killerPerks = [
     function cardMarkup(item, type) {
       const tags = (item.tags || []).map(tag => `<span class="tag">${tag}</span>`).join("");
       const meta = type === "killer" ? item.alias : item.origin;
-      
       const counterHtml = (type === "killer" && item.counter) 
         ? `<details style="margin-top:10px;border-top:1px dashed #333;"><summary style="color:#ffcc00;">Как играть против</summary><p style="color:#ffcc00;border-left-color:#ffcc00;">${item.counter}</p></details>` 
         : "";
@@ -335,17 +341,11 @@ const killerPerks = [
         <article class="card">
           <div class="card-top">
             <div class="avatar killer-avatar">${initials(item.name)}</div>
-            <div>
-              <h3>${item.name}</h3>
-              <p class="alias">${meta}</p>
-            </div>
+            <div><h3>${item.name}</h3><p class="alias">${meta}</p></div>
           </div>
           <div class="tags">${tags}</div>
           <p class="desc">${item.desc}</p>
-          <details>
-            <summary>Лор</summary>
-            <p>${item.lore}</p>
-          </details>
+          <details><summary>Лор</summary><p>${item.lore}</p></details>
           ${counterHtml}
         </article>
       `;
@@ -355,8 +355,7 @@ const killerPerks = [
       const container = document.getElementById(containerId);
       const count = document.getElementById(countId);
       const query = normalize(document.getElementById("search").value);
-      
-      const filtered = items.filter(function (item) {
+      const filtered = items.filter(item => {
         const haystack = normalize([item.name, item.alias || "", item.origin || "", item.desc, item.lore, (item.tags || []).join(" ")].join(" "));
         return !query || haystack.includes(query);
       });
@@ -399,25 +398,15 @@ const killerPerks = [
       const pool = role === "killer" ? killerPerks : survivorPerks;
       const roleLabel = role === "killer" ? "Маньяк" : "Выживший";
 
-      const scored = pool.map(perk => ({ ...perk, score: scorePerk(perk, selectedStyle, text) }))
-        .sort((a, b) => b.score - a.score || Math.random() - 0.5);
+      const scored = pool.map(perk => ({ ...perk, score: scorePerk(perk, selectedStyle, text) }));
+      let suitablePerks = scored.filter(p => p.score > 0);
+      if (suitablePerks.length < 4) suitablePerks = scored;
 
-      const chosen = [];
-      const used = new Set();
+      suitablePerks.sort((a, b) => b.score - a.score);
+      let topPerks = suitablePerks.slice(0, 10);
+      topPerks = topPerks.sort(() => Math.random() - 0.5);
 
-      scored.forEach(perk => {
-        if (chosen.length < 4 && perk.score > 0 && !used.has(perk.name)) {
-          chosen.push(perk);
-          used.add(perk.name);
-        }
-      });
-      scored.forEach(perk => {
-        if (chosen.length < 4 && !used.has(perk.name)) {
-          chosen.push(perk);
-          used.add(perk.name);
-        }
-      });
-
+      const chosen = topPerks.slice(0, 4);
       const styleLabel = selectedStyle || "по описанию";
       const result = document.getElementById("buildResult");
       result.classList.add("visible");
@@ -433,42 +422,149 @@ const killerPerks = [
         <h3>Билд для роли: ${roleLabel}</h3>
         <p style="color:#888;margin:0 0 10px;">Стиль: ${styleLabel}</p>
         <ul>${items}</ul>
-        <p class="why"><strong>Почему так:</strong> ${whyText.join("; ")}. Перки отсортированы по совпадению с тегами.</p>
+        <p class="why"><strong>Почему так:</strong> ${whyText.join("; ")}. Билд собран из пула подходящих перков со случайным смещением.</p>
       `;
     }
 
-    const whispers = [
-      "Сущность не злая. Она просто голодна. И ты — её любимое блюдо.",
-      "Не беги по прямой. Никогда не беги по прямой.",
-      "Иногда лучший друг — это тишина. И сломанный генератор.",
-      "Смерть — это не конец. Это просто новый виток петли.",
-      "Ты слышишь эту музыку? Она играет для тебя.",
-      "Не доверяй шкафам. В них всегда кто-то есть.",
-      "Билд без Dead Hard — это не билд, а просто крик о помощи.",
-      "В тумане нет героев. Есть только те, кто еще дышит.",
-      "Посмотри в глаза Майклу Майерсу. Это последнее, что ты увидишь.",
-      "Если ты слышишь колокольчик, значит, ты уже опоздал.",
-      "Лучший способ выжить против Медсестры — не крутить петли, а молиться.",
-      "Твоя команда где-то там. Но они не придут.",
-      "Крюк не больно. Больно, когда тебя с него снимают, чтобы повесить снова.",
-      "Учись играть против Легиона. Просто беги.",
-      "Туман поглощает всё. Даже твои надежды на ранг Ирида 1."
-    ];
+    // Логика игры "Ремонт генератора"
+    let isRepairing = false;
+    let repairProgress = 0;
+    let gameLoop;
+    let isSkillCheckActive = false;
+    let skillCheckSuccessZoneStart = 0;
+    let skillCheckSuccessZoneEnd = 0;
+    let skillCheckPointerPos = 0;
+    let skillCheckSpeed = 2;
+    let skillCheckInterval;
 
-    function generateWhisper() {
-      const textEl = document.getElementById("whisperText");
-      const btn = document.getElementById("whisperBtn");
-      textEl.style.opacity = 0;
-      btn.textContent = "Слушаем...";
-      setTimeout(() => {
-        const randomWhisper = whispers[Math.floor(Math.random() * whispers.length)];
-        textEl.textContent = `"${randomWhisper}"`;
-        textEl.style.transition = "opacity 0.5s";
-        textEl.style.opacity = 1;
-        btn.textContent = "Услышать шепот";
-      }, 600);
+    const progressBar = document.getElementById("progressBar");
+    const repairBtn = document.getElementById("repairBtn");
+    const skillCheckContainer = document.getElementById("skillCheckContainer");
+    const skillCheckBtn = document.getElementById("skillCheckBtn");
+    const skillCheckPointer = document.getElementById("skillCheckPointer");
+    const skillCheckZone = document.getElementById("skillCheckZone");
+    const gameStatus = document.getElementById("gameStatus");
+
+    function startRepair(e) {
+      e.preventDefault();
+      if (isSkillCheckActive || repairProgress >= 100) return;
+      isRepairing = true;
+      gameStatus.textContent = "Ремонтируем...";
+      gameStatus.style.color = "#7bd88f";
+      
+      gameLoop = setInterval(() => {
+        if (isRepairing && !isSkillCheckActive) {
+          repairProgress += 1.5;
+          if (repairProgress > 100) repairProgress = 100;
+          progressBar.style.width = repairProgress + "%";
+          
+          if (repairProgress === 100) {
+            stopRepair();
+            gameStatus.textContent = "Генератор починен!";
+            gameStatus.style.color = "#7bd88f";
+            repairBtn.textContent = "Начать заново";
+            repairBtn.style.background = "";
+          }
+        }
+      }, 50);
     }
 
+    function stopRepair() {
+      isRepairing = false;
+      if (gameLoop) clearInterval(gameLoop);
+    }
+
+    function resetGame() {
+      stopRepair();
+      isSkillCheckActive = false;
+      repairProgress = 0;
+      progressBar.style.width = "0%";
+      skillCheckContainer.style.display = "none";
+      skillCheckBtn.style.display = "none";
+      repairBtn.style.display = "block";
+      repairBtn.textContent = "Зажать для ремонта";
+      gameStatus.textContent = "Генератор в норме";
+      gameStatus.style.color = "#ffcc00";
+    }
+
+    function triggerSkillCheck() {
+      isSkillCheckActive = true;
+      skillCheckContainer.style.display = "block";
+      repairBtn.style.display = "none";
+      skillCheckBtn.style.display = "block";
+      gameStatus.textContent = "ПРОВЕРКА РЕАКЦИИ!";
+      gameStatus.style.color = "#ff3344";
+
+      skillCheckPointerPos = 0;
+      const zoneSize = 60;
+      skillCheckSuccessZoneStart = Math.random() * (360 - zoneSize);
+      skillCheckSuccessZoneEnd = skillCheckSuccessZoneStart + zoneSize;
+      
+      const circumference = 2 * Math.PI * 60;
+      const offset = circumference - (zoneSize / 360) * circumference;
+      skillCheckZone.style.strokeDasharray = `${circumference - offset} ${offset}`;
+      skillCheckZone.style.transform = `rotate(${skillCheckSuccessZoneStart}deg)`;
+
+      skillCheckSpeed = 2 + Math.random() * 2;
+      skillCheckInterval = setInterval(() => {
+        skillCheckPointerPos += skillCheckSpeed;
+        if (skillCheckPointerPos > 360) skillCheckPointerPos = 0;
+        skillCheckPointer.style.transform = `rotate(${skillCheckPointerPos}deg)`;
+      }, 16);
+    }
+
+    function resolveSkillCheck() {
+      clearInterval(skillCheckInterval);
+      isSkillCheckActive = false;
+      skillCheckContainer.style.display = "none";
+      skillCheckBtn.style.display = "none";
+      repairBtn.style.display = "block";
+
+      if (skillCheckPointerPos >= skillCheckSuccessZoneStart && skillCheckPointerPos <= skillCheckSuccessZoneEnd) {
+        gameStatus.textContent = "Идеально!";
+        gameStatus.style.color = "#7bd88f";
+        repairProgress += 15;
+        if (repairProgress > 100) repairProgress = 100;
+      } else {
+        gameStatus.textContent = "Генератор взорвался!";
+        gameStatus.style.color = "#ff3344";
+        repairProgress -= 10;
+        if (repairProgress < 0) repairProgress = 0;
+        document.body.style.background = "#ff0000";
+        setTimeout(() => document.body.style.background = "", 100);
+      }
+
+      progressBar.style.width = repairProgress + "%";
+      if (repairProgress >= 100) {
+        gameStatus.textContent = "Генератор починен!";
+        repairBtn.textContent = "Начать заново";
+      } else {
+        setTimeout(() => {
+          gameStatus.textContent = "Генератор в норме";
+          gameStatus.style.color = "#ffcc00";
+        }, 1500);
+      }
+    }
+
+    repairBtn.addEventListener("mousedown", startRepair);
+    repairBtn.addEventListener("touchstart", startRepair, {passive: false});
+    document.addEventListener("mouseup", stopRepair);
+    document.addEventListener("touchend", stopRepair);
+
+    setInterval(() => {
+      if (isRepairing && !isSkillCheckActive && repairProgress < 100 && Math.random() < 0.2) {
+        triggerSkillCheck();
+      }
+    }, 2000);
+
+    skillCheckBtn.addEventListener("mousedown", resolveSkillCheck);
+    skillCheckBtn.addEventListener("touchstart", (e) => { e.preventDefault(); resolveSkillCheck(); }, {passive: false});
+
+    repairBtn.addEventListener("click", () => {
+      if (repairProgress >= 100) resetGame();
+    });
+
+    // Аккаунт
     function checkAuth() {
       const user = localStorage.getItem("dbdUser");
       const authStatus = document.getElementById("authStatus");
@@ -534,7 +630,6 @@ const killerPerks = [
     document.getElementById("search").addEventListener("input", renderAll);
     document.getElementById("roleSelect").addEventListener("change", updateStyles);
     document.getElementById("generateBtn").addEventListener("click", generateBuild);
-    document.getElementById("whisperBtn").addEventListener("click", generateWhisper);
 
     updateStyles();
     renderAll();
