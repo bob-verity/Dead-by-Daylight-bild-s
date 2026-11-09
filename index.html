@@ -43,11 +43,8 @@
     .card { background: linear-gradient(180deg, var(--card2), var(--card)); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: 0 6px 20px rgba(0,0,0,0.4); position: relative; overflow: hidden; }
     .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent2), transparent); opacity: 0.4; }
     .card-top { display: flex; gap: 12px; align-items: flex-start; }
-    
-    /* Новый стиль для картинок персонажей */
     .avatar { width: 56px; height: 56px; border-radius: 8px; flex: 0 0 auto; border: 1px solid rgba(217,43,58,0.4); box-shadow: 0 0 10px rgba(0,0,0,0.5); background: #000; overflow: hidden; }
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    
     .card h3 { margin: 0; font-size: 16px; line-height: 1.2; }
     .alias { margin: 4px 0 0; color: var(--accent2); font-size: 12px; font-weight: 600; }
     .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
@@ -76,8 +73,8 @@
     .result.visible { display: block; animation: fadeIn 0.4s; }
     .result h3 { margin: 0 0 10px; font-size: 16px; color: var(--accent2); }
     .result ul { margin: 0 0 16px; padding-left: 0; list-style: none; }
-    .result li { margin: 8px 0; font-size: 14px; line-height: 1.4; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border-left: 2px solid var(--accent); }
-
+    .result li { margin: 8px 0; padding: 10px; border-radius: 6px; background: rgba(255,255,255,0.03); display: flex; gap: 10px; align-items: flex-start; border-left: 2px solid var(--accent); }
+    
     .game-container { display: flex; flex-direction: column; align-items: center; padding: 20px; }
     .progress-bg { width: 100%; max-width: 300px; height: 15px; background: #222; border-radius: 10px; margin-bottom: 20px; overflow: hidden; border: 1px solid #333; }
     .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #8c0e1a, #d92b3a); transition: width 0.1s; }
@@ -377,7 +374,48 @@ const killerPerks = [
       return String(value || "").toLowerCase().replace(/ё/g, "е").replace(/\s+/g, " ").trim();
     }
 
-    // Функция для отрисовки карточки с картинкой
+    // Словарь для перевода имен в ссылки на картинки
+    const engNames = {
+      "Охотник": "TheTrapper", "Призрак": "TheWraith", "Деревенщина": "TheHillbilly",
+      "Медсестра": "TheNurse", "Форма": "TheShape", "Ведьма": "TheHag",
+      "Доктор": "TheDoctor", "Охотница": "TheHuntress", "Каннибал": "TheCannibal",
+      "Кошмар": "TheNightmare", "Свинья": "ThePig", "Клоун": "TheClown",
+      "Дух": "TheSpirit", "Легион": "TheLegion", "Чума": "ThePlague",
+      "Призрачное лицо": "TheGhostFace", "Демогоргон": "TheDemogorgon", "Они": "TheOni",
+      "Стрелок": "TheDeathslinger", "Палач": "TheExecutioner", "Мор": "TheBlight",
+      "Близнецы": "TheTwins", "Трюкач": "TheTrickster", "Немезис": "TheNemesis",
+      "Сенобит": "TheCenobite", "Художница": "TheArtist", "Онрё": "TheOnryo",
+      "Грязь": "TheDredge", "Кукловод": "TheMastermind", "Рыцарь": "TheKnight",
+      "Торговка черепами": "TheSkullMerchant", "Сингулярность": "TheSingularity",
+      "Дуайт Фэрфилд": "DwightFairfield", "Мэг Томас": "MegThomas",
+      "Клодетт Морэль": "ClaudetteMorel", "Джейк Парк": "JakePark",
+      "Ниа Карлссон": "NeaKarlsson", "Лори Строуд": "LaurieStrode",
+      "Билл Овербек": "BillOverbeck", "Дэвид Кинг": "DavidKing",
+      "Квентин Смит": "QuentinSmith", "Дэвид Тапп": "DavidTapp",
+      "Кейт Денсон": "KateDenson", "Адам Фрэнсис": "AdamFrancis",
+      "Джефф Йохансен": "JeffJohansen", "Джейн Ромеро": "JaneRomero",
+      "Эш Уильямс": "AshWilliams", "Нэнси Уилер": "NancyWheeler",
+      "Стив Харрингтон": "SteveHarrington", "Юи Кимура": "YuiKimura",
+      "Зарина Кассир": "ZarinaKassir", "Шерил Мейсон": "CherylMason",
+      "Феликс Рихтер": "FelixRichter", "Элоди Ракото": "ElodieRakoto",
+      "Юн-Джин Ли": "YunJinLee", "Джилл Валентайн": "JillValentine",
+      "Леон С. Кеннеди": "LeonSKennedy", "Микаэла Рид": "MikaelaReid",
+      "Джона Васкес": "JonahVasquez", "Йоичи Асакава": "YoichiAsakawa",
+      "Хэдди Каур": "HaddieKaur", "Ада Вонг": "AdaWong",
+      "Ребекка Чемберс": "RebeccaChambers", "Витторио Тоскано": "VittorioToscano",
+      "Талита Лира": "ThalitaLyra", "Ренато Лира": "RenatoLyra",
+      "Габриэль Сома": "GabrielSoma", "Николас Кейдж": "NicolasCage",
+      "Эллен Рипли": "EllenRipley", "Алан Уэйк": "AlanWake",
+      "Сейбл Уорд": "SableWard", "Эстри Язар": "AestriYazar",
+      "Лара Крофт": "LaraCroft", "Тревор Бельмонт": "TrevorBelmont", "Таури Кейн": "TaurieCain"
+    };
+
+    // Функция для получения ссылки на иконку перка
+    function getPerkIcon(perkName) {
+      let clean = perkName.replace("Hex: ", "").replace("Scourge Hook: ", "").replace(/[^a-zA-Z0-9]/g, "");
+      return `https://static.wikia.nocookie.net/deadbydaylight_gamepedia_en/images/1/1a/${clean}_Icon.png/revision/latest`;
+    }
+
     function cardMarkup(item, type) {
       const tags = (item.tags || []).map(tag => `<span class="tag">${tag}</span>`).join("");
       const meta = type === "killer" ? item.alias : item.origin;
@@ -385,16 +423,16 @@ const killerPerks = [
         ? `<details style="margin-top:10px;border-top:1px dashed #333;"><summary style="color:#ffcc00;">Как играть против</summary><p style="color:#ffcc00;border-left-color:#ffcc00;">${item.counter}</p></details>` 
         : "";
 
-      // Очищаем имя от английского перевода для поиска картинки
       const cleanName = item.name.split('(')[0].trim();
-      const imgUrl = `https://raw.githubusercontent.com/MakotoSakamoto/DBD-API-Data/master/src/data/characters/icons/${encodeURIComponent(cleanName)}.png`;
-      const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23141419'/><text x='50' y='55' font-size='40' text-anchor='middle' fill='%238c0e1a'>?</text></svg>";
+      const engName = engNames[cleanName] || "IconChar"; 
+      const imgUrl = `https://static.wikia.nocookie.net/deadbydaylight_gamepedia_en/images/1/1a/${engName}_Portrait.png/revision/latest`;
+      const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23141419'/><path d='M50 20 L60 40 L80 50 L60 60 L50 80 L40 60 L20 50 L40 40 Z' fill='%238c0e1a' opacity='0.5'/></svg>";
 
       return `
         <article class="card">
           <div class="card-top">
             <div class="avatar">
-              <img src="${imgUrl}" onerror="this.src='${fallbackImg}'" alt="${cleanName}">
+              <img src="${imgUrl}" onerror="this.src='${fallbackImg}'" alt="${cleanName}" loading="lazy">
             </div>
             <div><h3>${item.name}</h3><p class="alias">${meta}</p></div>
           </div>
@@ -469,7 +507,23 @@ const killerPerks = [
       const result = document.getElementById("buildResult");
       result.classList.add("visible");
 
-      const items = chosen.map(perk => `<li><strong>${perk.name}</strong> — ${perk.desc}</li>`).join("");
+      // Генерируем картинку для каждого перка
+      const items = chosen.map(perk => {
+        let imgUrl = getPerkIcon(perk.name);
+        let fallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23141419'/><circle cx='50' cy='50' r='30' fill='%238c0e1a' opacity='0.5'/></svg>";
+
+        return `
+          <li style="display: flex; gap: 10px; align-items: flex-start;">
+            <div style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 50%; overflow: hidden; border: 1px solid rgba(217,43,58,0.5); background: #000;">
+              <img src="${imgUrl}" onerror="this.src='${fallback}'" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+            </div>
+            <div>
+              <strong style="color:#fff; font-size: 15px;">${perk.name}</strong><br>
+              <span style="color:#aaa; font-size: 13px;">${perk.desc}</span>
+            </div>
+          </li>
+        `;
+      }).join("");
       
       let isLogged = !!localStorage.getItem("dbdUser");
       const publishBtn = isLogged 
@@ -564,9 +618,21 @@ const killerPerks = [
             <span class="tag" style="background:var(--accent); color:#fff;">${b.role}</span>
           </div>
           <p class="desc" style="margin-top:10px; font-size:16px; color:#fff;"><strong>${b.name}</strong></p>
-          <ul style="padding-left:20px; font-size:13px; color:#ccc; margin-bottom:0;">
-            ${b.perks.map(p => `<li>${p}</li>`).join("")}
-          </ul>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+            ${b.perks.map(p => {
+              let imgUrl = getPerkIcon(p);
+              let fallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23141419'/></svg>";
+              
+              return `
+                <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                  <div style="width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(217,43,58,0.3); flex-shrink: 0;">
+                    <img src="${imgUrl}" onerror="this.src='${fallback}'" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                  </div>
+                  <span style="font-size: 11px; line-height: 1.2; color: #ddd;">${p}</span>
+                </div>
+              `;
+            }).join("")}
+          </div>
         </div>
       `).join("");
     }
