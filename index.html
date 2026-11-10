@@ -87,7 +87,6 @@
     .input-group { margin-bottom: 15px; text-align: left; }
     .input-group label { display: block; margin-bottom: 5px; font-size: 12px; color: var(--muted); }
     
-    /* Стили для кастомного выбора перков */
     .custom-perk-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
     .selected-perk-slot { background: #0a0a0d; border: 1px dashed #333; border-radius: 8px; padding: 10px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; min-height: 60px; }
     .selected-perk-slot:hover { border-color: var(--accent2); }
@@ -97,7 +96,6 @@
     .slot-text { font-size: 12px; color: #888; line-height: 1.2; }
     .slot-text.filled { color: #fff; font-weight: bold; }
 
-    /* Модальное окно */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
     .modal-overlay.active { display: flex; }
     .modal-content { background: var(--card); width: 90%; max-width: 500px; height: 80vh; border-radius: 16px; border: 1px solid var(--line); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
@@ -198,16 +196,13 @@
     <section id="account" class="tab-panel"><div class="panel-head"><h2>Профиль</h2></div><div id="accountContent"></div></section>
   </main>
 
-  <!-- Модальное окно выбора перков -->
   <div class="modal-overlay" id="perkModal">
     <div class="modal-content">
       <div class="modal-header">
         <h3>Выберите перки (<span id="selectedCount">0</span>/4)</h3>
         <button class="modal-close" onclick="closePerkModal()">×</button>
       </div>
-      <div class="modal-body" id="perkModalList">
-        <!-- Список перков генерируется через JS -->
-      </div>
+      <div class="modal-body" id="perkModalList"></div>
       <div class="modal-footer">
         <button class="btn" onclick="closePerkModal()" style="margin: 0;">Готово</button>
       </div>
@@ -417,18 +412,47 @@ const killerPerks = [
       return String(value || "").toLowerCase().replace(/ё/g, "е").replace(/\s+/g, " ").trim();
     }
 
-    // Функция для получения Base64 картинки (имитация встроенных картинок)
-    function getBase64Img(type, name) {
-      // В реальном коде тут были бы огромные строки Base64. 
-      // Для экономии места в этом примере мы используем стилизованную SVG-заглушку.
-      // Если вы хотите реальные картинки, вам нужно вставить их Base64 коды сюда.
-      const fallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23141419'/><path d='M50 20 L60 40 L80 50 L60 60 L50 80 L40 60 L20 50 L40 40 Z' fill='%238c0e1a' opacity='0.5'/></svg>";
-      return fallback;
-    }
+    // Словарь для перевода имен в ссылки на картинки
+    const engNames = {
+      "Охотник": "TheTrapper", "Призрак": "TheWraith", "Деревенщина": "TheHillbilly",
+      "Медсестра": "TheNurse", "Форма": "TheShape", "Ведьма": "TheHag",
+      "Доктор": "TheDoctor", "Охотница": "TheHuntress", "Каннибал": "TheCannibal",
+      "Кошмар": "TheNightmare", "Свинья": "ThePig", "Клоун": "TheClown",
+      "Дух": "TheSpirit", "Легион": "TheLegion", "Чума": "ThePlague",
+      "Призрачное лицо": "TheGhostFace", "Демогоргон": "TheDemogorgon", "Они": "TheOni",
+      "Стрелок": "TheDeathslinger", "Палач": "TheExecutioner", "Мор": "TheBlight",
+      "Близнецы": "TheTwins", "Трюкач": "TheTrickster", "Немезис": "TheNemesis",
+      "Сенобит": "TheCenobite", "Художница": "TheArtist", "Онрё": "TheOnryo",
+      "Грязь": "TheDredge", "Кукловод": "TheMastermind", "Рыцарь": "TheKnight",
+      "Торговка черепами": "TheSkullMerchant", "Сингулярность": "TheSingularity",
+      "Дуайт Фэрфилд": "DwightFairfield", "Мэг Томас": "MegThomas",
+      "Клодетт Морэль": "ClaudetteMorel", "Джейк Парк": "JakePark",
+      "Ниа Карлссон": "NeaKarlsson", "Лори Строуд": "LaurieStrode",
+      "Билл Овербек": "BillOverbeck", "Дэвид Кинг": "DavidKing",
+      "Квентин Смит": "QuentinSmith", "Дэвид Тапп": "DavidTapp",
+      "Кейт Денсон": "KateDenson", "Адам Фрэнсис": "AdamFrancis",
+      "Джефф Йохансен": "JeffJohansen", "Джейн Ромеро": "JaneRomero",
+      "Эш Уильямс": "AshWilliams", "Нэнси Уилер": "NancyWheeler",
+      "Стив Харрингтон": "SteveHarrington", "Юи Кимура": "YuiKimura",
+      "Зарина Кассир": "ZarinaKassir", "Шерил Мейсон": "CherylMason",
+      "Феликс Рихтер": "FelixRichter", "Элоди Ракото": "ElodieRakoto",
+      "Юн-Джин Ли": "YunJinLee", "Джилл Валентайн": "JillValentine",
+      "Леон С. Кеннеди": "LeonSKennedy", "Микаэла Рид": "MikaelaReid",
+      "Джона Васкес": "JonahVasquez", "Йоичи Асакава": "YoichiAsakawa",
+      "Хэдди Каур": "HaddieKaur", "Ада Вонг": "AdaWong",
+      "Ребекка Чемберс": "RebeccaChambers", "Витторио Тоскано": "VittorioToscano",
+      "Талита Лира": "ThalitaLyra", "Ренато Лира": "RenatoLyra",
+      "Габриэль Сома": "GabrielSoma", "Николас Кейдж": "NicolasCage",
+      "Эллен Рипли": "EllenRipley", "Алан Уэйк": "AlanWake",
+      "Сейбл Уорд": "SableWard", "Эстри Язар": "AestriYazar",
+      "Лара Крофт": "LaraCroft", "Тревор Бельмонт": "TrevorBelmont", "Таури Кейн": "TaurieCain"
+    };
 
-    // Вспомогательная функция для очистки имен
-    function getSafeName(name) {
-      return name.split('(')[0].trim().replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+    // Функция для получения ссылки на иконку перка (использует надежный GitHub репозиторий)
+    function getPerkIcon(perkName) {
+      // Очищаем название от префиксов
+      let clean = perkName.replace("Hex: ", "").replace("Scourge Hook: ", "").replace(/[^a-zA-Z0-9]/g, "");
+      return `https://raw.githubusercontent.com/MakotoSakamoto/DBD-API-Data/main/src/data/perks/icons/${clean}.png`;
     }
 
     function cardMarkup(item, type) {
@@ -438,13 +462,16 @@ const killerPerks = [
         ? `<details style="margin-top:10px;border-top:1px dashed #333;"><summary style="color:#ffcc00;">Как играть против</summary><p style="color:#ffcc00;border-left-color:#ffcc00;">${item.counter}</p></details>` 
         : "";
 
-      const imgUrl = getBase64Img(type, item.name);
+      const cleanName = item.name.split('(')[0].trim();
+      const engName = engNames[cleanName] || "IconChar"; 
+      const imgUrl = `https://raw.githubusercontent.com/MakotoSakamoto/DBD-API-Data/main/src/data/characters/icons/${engName}.png`;
+      const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23141419'/><path d='M50 20 L60 40 L80 50 L60 60 L50 80 L40 60 L20 50 L40 40 Z' fill='%238c0e1a' opacity='0.5'/></svg>";
 
       return `
         <article class="card">
           <div class="card-top">
             <div class="avatar">
-              <img src="${imgUrl}" alt="${item.name}">
+              <img src="${imgUrl}" onerror="this.src='${fallbackImg}'" alt="${cleanName}" loading="lazy">
             </div>
             <div><h3>${item.name}</h3><p class="alias">${meta}</p></div>
           </div>
@@ -520,11 +547,13 @@ const killerPerks = [
       result.classList.add("visible");
 
       const items = chosen.map(perk => {
-        let imgUrl = getBase64Img("perk", perk.name);
+        let imgUrl = getPerkIcon(perk.name);
+        let fallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23141419'/><circle cx='50' cy='50' r='30' fill='%238c0e1a' opacity='0.5'/></svg>";
+
         return `
           <li style="display: flex; gap: 10px; align-items: flex-start;">
             <div style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 50%; overflow: hidden; border: 1px solid rgba(217,43,58,0.5); background: #000;">
-              <img src="${imgUrl}" style="width: 100%; height: 100%; object-fit: cover;">
+              <img src="${imgUrl}" onerror="this.src='${fallback}'" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
             </div>
             <div>
               <strong style="color:#fff; font-size: 15px;">${perk.name}</strong><br>
@@ -565,7 +594,9 @@ const killerPerks = [
       document.querySelector('[data-tab="community"]').click();
     }
 
-    // --- КАСТОМНОЕ ОКНО ВЫБОРА ПЕРКОВ ---
+    // ==========================================
+    // РУЧНОЕ СОЗДАНИЕ БИЛДОВ (С МОДАЛЬНЫМ ОКНОМ)
+    // ==========================================
     let selectedPerks = [null, null, null, null];
 
     function resetCustomBuildForm() {
@@ -582,7 +613,7 @@ const killerPerks = [
         const isSelected = selectedPerks.includes(p.name);
         return `
           <div class="perk-list-item ${isSelected ? 'selected' : ''}" onclick="togglePerk('${p.name}')">
-            <img src="${getBase64Img('perk', p.name)}" alt="${p.name}">
+            <img src="${getPerkIcon(p.name)}" alt="${p.name}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 100\\'><rect width=\\'100\\' height=\\'100\\' fill=\\'%23141419\\'/></svg>'">
             <span>${p.name}</span>
           </div>
         `;
@@ -621,7 +652,7 @@ const killerPerks = [
         if (name) {
           slot.classList.add("filled");
           slot.innerHTML = `
-            <div class="slot-icon"><img src="${getBase64Img('perk', name)}"></div>
+            <div class="slot-icon"><img src="${getPerkIcon(name)}"></div>
             <span class="slot-text filled">${name}</span>
           `;
         } else {
@@ -673,7 +704,7 @@ const killerPerks = [
             ${b.perks.map(p => `
                 <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
                   <div style="width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(217,43,58,0.3); flex-shrink: 0;">
-                    <img src="${getBase64Img('perk', p)}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="${getPerkIcon(p)}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
                   </div>
                   <span style="font-size: 11px; line-height: 1.2; color: #ddd;">${p}</span>
                 </div>
